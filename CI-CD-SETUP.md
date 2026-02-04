@@ -2,30 +2,20 @@
 
 本文档说明如何配置 GitHub Secrets 以启用自动部署到生产服务器。
 
+## 部署方式
+
+**本配置采用服务器本地构建方式**，无需 Docker Hub 访问。
+- GitHub Actions 通过 rsync 将源代码同步到服务器
+- 服务器上直接构建 Docker 镜像并部署
+- 适用于无法访问 Docker Hub 的服务器环境
+
 ## 前置条件
 
 1. **GitHub 仓库**: 代码已推送到 GitHub
-2. **Docker Hub 账号**: 用于存储 Docker 镜像
-3. **Linux 服务器**: 已安装 Docker 和 Docker Compose
-4. **SSH 访问**: 可以通过 SSH 连接到服务器
+2. **Linux 服务器**: 已安装 Docker 和 Docker Compose
+3. **SSH 访问**: 可以通过 SSH 连接到服务器
 
-## 步骤 1: 准备 Docker Hub
-
-### 1.1 注册 Docker Hub
-如果还没有账号，访问 https://hub.docker.com/ 注册
-
-### 1.2 创建访问令牌（推荐）
-为了安全，建议使用访问令牌而不是密码：
-
-1. 登录 Docker Hub
-2. 点击右上角头像 → **Account Settings**
-3. 选择 **Security** → **New Access Token**
-4. 输入令牌描述（如 `github-actions`）
-5. 权限选择 **Read & Write**
-6. 点击 **Generate**
-7. **重要**: 复制生成的令牌（只显示一次）
-
-## 步骤 2: 配置 GitHub Secrets
+## 步骤 1: 配置 GitHub Secrets
 
 进入 GitHub 仓库页面：
 1. 点击 **Settings** → **Secrets and variables** → **Actions**
@@ -37,22 +27,20 @@
 
 | Secret 名称 | 说明 | 示例值 | 如何获取 |
 |------------|------|--------|---------|
-| `DOCKER_USERNAME` | Docker Hub 用户名 | `myusername` | 你的 Docker Hub 用户名 |
-| `DOCKER_PASSWORD` | Docker Hub 密码/令牌 | `dckr_pat_xxxxx` | 步骤 1.2 生成的访问令牌 |
 | `SERVER_HOST` | 服务器 IP 地址 | `192.168.1.100` 或 `example.com` | 服务器公网 IP 或域名 |
 | `SERVER_USER` | SSH 登录用户名 | `root` 或 `ubuntu` | 服务器 SSH 用户名 |
-| `SSH_PRIVATE_KEY` | SSH 私钥 | `-----BEGIN OPENSSH PRIVATE KEY-----...` | 见步骤 3 |
-| `APP_URL` | 应用访问地址（健康检查用） | `http://your-domain.com` | 你的应用域名或公网 IP |
+| `SERVER_PORT` | SSH 端口 | `8222` | 你的 SSH 端口 |
+| `SSH_PRIVATE_KEY` | SSH 私钥 | `-----BEGIN OPENSSH PRIVATE KEY-----...` | 见步骤 2 |
+| `APP_URL` | 应用访问地址（健康检查用） | `http://your-domain.com:3000` | 你的应用域名或公网 IP |
 
 ### 可选的 Secrets
 
 | Secret 名称 | 说明 | 默认值 |
 |------------|------|--------|
-| `SERVER_PORT` | SSH 端口 | `8222` |
-| `DEPLOY_PATH` | 服务器部署目录 | `/opt/app` |
+| `DEPLOY_PATH` | 服务器部署目录 | `/opt/computing-marketplace` |
 | `APP_PORT` | 应用端口（宿主机） | `3000` |
 
-## 步骤 3: 生成 SSH 密钥对
+## 步骤 2: 生成 SSH 密钥对
 
 ### 3.1 在本地生成密钥
 
@@ -157,9 +145,9 @@ sudo ufw enable
 如果使用自定义部署路径：
 
 ```bash
-sudo mkdir -p /opt/app
-sudo chown $USER:$USER /opt/app
-cd /opt/app
+sudo mkdir -p /opt/computing-marketplace
+sudo chown $USER:$USER /opt/computing-marketplace
+cd /opt/computing-marketplace
 ```
 
 ## 步骤 5: 首次部署测试
@@ -207,14 +195,14 @@ curl http://your-server-ip:3000
 - 确认公钥已正确添加到服务器的 `~/.ssh/authorized_keys`
 - 检查 `SERVER_USER` 和 `SERVER_HOST` 是否正确
 
-### 问题 2: Docker 登录失败
+### 问题 2: 文件同步失败
 
-**错误**: `unauthorized: authentication required`
+**错误**: `rsync: failed to connect to`
 
 **解决**:
-- 确认 `DOCKER_USERNAME` 和 `DOCKER_PASSWORD` 正确
-- 如果使用访问令牌，确认令牌有 **Read & Write** 权限
-- 尝试在本地测试: `docker login -u USERNAME --password-stdin`
+- 检查服务器防火墙是否允许 SSH 端口（8222）
+- 确认 `SERVER_PORT` 配置正确
+- 测试 SSH 连接: `ssh -p 8222 user@server`
 
 ### 问题 3: 容器启动失败
 
@@ -223,8 +211,8 @@ curl http://your-server-ip:3000
 **解决**:
 ```bash
 # 在服务器上查看日志
-ssh user@your-server-ip
-cd /opt/app
+ssh -p 8222 user@your-server-ip
+cd /opt/computing-marketplace
 docker-compose logs
 docker-compose ps
 
@@ -308,8 +296,8 @@ sudo certbot renew --dry-run
 ## 安全建议
 
 1. **定期更新 Secrets**:
-   - 每 90 天更新 Docker Hub 访问令牌
-   - 定期轮换 SSH 密钥
+   - 定期轮换 SSH 密钥（建议每 90 天）
+   - 使用强密码和密钥
 
 2. **限制 SSH 密钥使用**:
    - 为 GitHub Actions 专用密钥设置权限限制
@@ -320,8 +308,13 @@ sudo certbot renew --dry-run
    - 监控服务器资源使用
 
 4. **备份重要数据**:
-   - 定期备份数据库和应用数据
+   - 定期备份应用数据
    - 保留关键配置文件的版本控制
+
+5. **服务器安全**:
+   - 定期更新系统和 Docker 版本
+   - 配置防火墙规则
+   - 禁用 SSH 密码登录，仅使用密钥认证
 
 ## 手动部署
 
@@ -329,9 +322,15 @@ sudo certbot renew --dry-run
 
 ```bash
 # 在服务器上执行
-cd /opt/app
-docker-compose pull
-docker-compose up -d
+cd /opt/computing-marketplace
+
+# 重新构建并启动
+docker-compose up -d --build
+
+# 查看日志
+docker-compose logs -f
+
+# 清理旧镜像
 docker image prune -af
 ```
 
@@ -344,13 +343,11 @@ Push to main branch
        ↓
 [GitHub Actions 触发]
        ↓
-[构建 Docker 镜像]
-       ↓
-[推送镜像到 Docker Hub]
+[rsync 同步源代码到服务器]
        ↓
 [SSH 连接服务器]
        ↓
-[拉取最新镜像]
+[在服务器上构建 Docker 镜像]
        ↓
 [停止旧容器]
        ↓
@@ -366,9 +363,9 @@ Push to main branch
 如果需要自定义部署流程，编辑 `.github/workflows/deploy.yml`：
 
 ```yaml
-# 修改镜像名称
+# 修改部署路径
 env:
-  IMAGE_NAME: your-custom-name
+  DEPLOY_PATH: /your/custom/path
 
 # 添加环境变量
 environment:
@@ -387,6 +384,7 @@ environment:
 ## 资源链接
 
 - [GitHub Actions 文档](https://docs.github.com/en/actions)
-- [Docker Hub 文档](https://docs.docker.com/docker-hub/)
+- [Docker 文档](https://docs.docker.com/)
 - [Docker Compose 文档](https://docs.docker.com/compose/)
 - [SSH 密钥管理](https://www.ssh.com/academy/ssh/key)
+- [rsync 文档](https://rsync.samba.org/documentation.html)
