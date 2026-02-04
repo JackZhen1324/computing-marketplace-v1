@@ -65,25 +65,23 @@ jobs:
             echo "REPO_URL value: $REPO_URL"
 
             # Check if REPO_URL contains placeholder
-            case "$REPO_URL" in
-              *yourusername*|*your-repo*)
-                echo ""
-                echo "❌ ERROR: REPO_URL is not configured!"
-                echo "Current value: $REPO_URL"
-                echo ""
-                echo "You need to configure the REPO_URL secret in GitHub:"
-                echo "1. Go to your GitHub repository"
-                echo "2. Click Settings → Secrets and variables → Actions"
-                echo "3. Click 'New repository secret'"
-                echo "4. Name: REPO_URL"
-                echo "5. Value: https://github.com/YOUR_USERNAME/YOUR_REPO.git"
-                echo ""
-                echo "Example: If your repo is https://github.com/johndoe/my-project"
-                echo "         then REPO_URL = https://github.com/johndoe/my-project.git"
-                echo ""
-                exit 1
-                ;;
-            esac
+            if [[ "$REPO_URL" == *"yourusername"* ]] || [[ "$REPO_URL" == *"your-repo"* ]]; then
+              echo ""
+              echo "❌ ERROR: REPO_URL is not configured!"
+              echo "Current value: $REPO_URL"
+              echo ""
+              echo "You need to configure the REPO_URL secret in GitHub:"
+              echo "1. Go to your GitHub repository"
+              echo "2. Click Settings → Secrets and variables → Actions"
+              echo "3. Click 'New repository secret'"
+              echo "4. Name: REPO_URL"
+              echo "5. Value: https://github.com/YOUR_USERNAME/YOUR_REPO.git"
+              echo ""
+              echo "Example: If your repo is https://github.com/johndoe/my-project"
+              echo "         then REPO_URL = https://github.com/johndoe/my-project.git"
+              echo ""
+              exit 1
+            fi
 
             echo "✅ REPO_URL is configured"
             echo ""
