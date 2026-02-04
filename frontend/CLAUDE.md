@@ -209,6 +209,58 @@ src/
 - plugins目录
 - 旧的图片资源
 
+## Docker 部署 (2025-02-04 新增)
+
+### 创建的文件
+
+1. **Dockerfile** (生产环境)
+   - 多阶段构建优化镜像大小
+   - Node 20 Alpine 构建 + Nginx Alpine 服务
+   - 非 root 用户运行提升安全性
+   - 健康检查配置
+
+2. **Dockerfile.dev** (开发环境)
+   - Node 20 Alpine 开发环境
+   - 支持热重载 (Vite HMR)
+   - 卷挂载实现代码实时更新
+
+3. **docker-compose.yml** (生产)
+   - 端口映射: 3000:8080
+   - 健康检查: 30秒间隔
+   - 重启策略: unless-stopped
+
+4. **docker-compose.dev.yml** (开发)
+   - 端口映射: 5173:5173
+   - 卷挂载支持热重载
+   - 开发服务器配置
+
+5. **nginx.conf**
+   - Gzip 压缩
+   - 静态资源缓存 (1年)
+   - SPA 路由支持
+   - 安全头配置
+   - 健康检查端点
+
+6. **.dockerignore**
+   - 排除 node_modules, dist, .git 等
+   - 优化构建上下文大小
+
+### 使用方法
+
+**生产环境**:
+```bash
+docker-compose up -d
+# 访问: http://localhost:3000
+```
+
+**开发环境**:
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+# 访问: http://localhost:5173
+```
+
+详细部署指南: [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## 待办事项 (可选)
 
 - [ ] 深色模式切换
@@ -246,3 +298,4 @@ npm run build
 **最后更新**: 2025-02-04
 **开发者**: Claude Sonnet 4.5
 **构建状态**: ✅ 通过
+**Docker支持**: ✅ 已配置生产/开发环境

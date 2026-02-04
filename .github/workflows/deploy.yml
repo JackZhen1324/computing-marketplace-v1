@@ -1,0 +1,137 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: computing-marketplace-frontend
+  DOCKERFILE_PATH: ./frontend/Dockerfile
+  DOCKER_COMPOSE_PATH: ./frontend/docker-compose.yml
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ${{ env.DOCKERFILE_PATH }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          platforms: linux/amd64
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || 8222 }}
+          timeout: 5m
+          script_stop: true
+          script: |
+            # Set variables
+            IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}"
+            CONTAINER_NAME="computing-marketplace-frontend"
+            DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/app' }}"
+
+            # Create deploy directory if not exists
+            sudo mkdir -p $DEPLOY_DIR
+            cd $DEPLOY_DIR
+
+            # Pull docker-compose.yml if not exists or update from repo
+            if [ ! -f docker-compose.yml ]; then
+              cat > docker-compose.yml << 'EOF'
+            version: '3.8'
+            services:
+              frontend:
+                image: $IMAGE_NAME:latest
+                container_name: $CONTAINER_NAME
+                ports:
+                  - "${{ secrets.APP_PORT || 3000 }}:8080"
+                restart: unless-stopped
+                environment:
+                  - NODE_ENV=production
+                networks:
+                  - app-network
+                healthcheck:
+                  test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/"]
+                  interval: 30s
+                  timeout: 10s
+                  retries: 3
+                  start_period: 40s
+            networks:
+              app-network:
+                driver: bridge
+            EOF
+            fi
+
+            # Login to Docker Hub
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            # Pull latest image
+            docker pull $IMAGE_NAME:latest
+
+            # Stop and remove old container
+            if [ $(docker ps -aq -f name=$CONTAINER_NAME) ]; then
+              docker stop $CONTAINER_NAME || true
+              docker rm $CONTAINER_NAME || true
+            fi
+
+            # Start new container
+            docker-compose up -d
+
+            # Remove old images (keep last 3 images)
+            docker image prune -af --filter "until=72h"
+
+            # Wait for health check
+            echo "Waiting for container to be healthy..."
+            sleep 10
+
+            # Check container status
+            if docker ps | grep -q $CONTAINER_NAME; then
+              echo "✅ Deployment successful! Container is running."
+              docker ps -f name=$CONTAINER_NAME
+            else
+              echo "❌ Deployment failed! Container is not running."
+              docker logs $CONTAINER_NAME
+              exit 1
+            fi
+
+      - name: Health check
+        run: |
+          # Wait for server to be ready
+          sleep 15
+          # Check if the application is responding
+          curl -f ${{ secrets.APP_URL || 'http://example.com' }} || exit 1
+          echo "✅ Application is responding!"
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Deployment completed successfully!"
+          else
+            echo "❌ Deployment failed!"
+          fi
