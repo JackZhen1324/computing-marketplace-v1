@@ -58,33 +58,17 @@ jobs:
               exit 1
             }
             echo "📍 Changed to: $(pwd)"
-            echo ""
-
-            # Verify REPO_URL is configured
-            echo "🔍 Checking REPO_URL configuration..."
-            echo "REPO_URL value: $REPO_URL"
+            echo "🔍 Checking REPO_URL: $REPO_URL"
 
             # Check if REPO_URL contains placeholder
-            if [[ "$REPO_URL" == *"yourusername"* ]] || [[ "$REPO_URL" == *"your-repo"* ]]; then
-              echo ""
-              echo "❌ ERROR: REPO_URL is not configured!"
-              echo "Current value: $REPO_URL"
-              echo ""
-              echo "You need to configure the REPO_URL secret in GitHub:"
-              echo "1. Go to your GitHub repository"
-              echo "2. Click Settings → Secrets and variables → Actions"
-              echo "3. Click 'New repository secret'"
-              echo "4. Name: REPO_URL"
-              echo "5. Value: https://github.com/YOUR_USERNAME/YOUR_REPO.git"
-              echo ""
-              echo "Example: If your repo is https://github.com/johndoe/my-project"
-              echo "         then REPO_URL = https://github.com/johndoe/my-project.git"
-              echo ""
+            if echo "$REPO_URL" | grep -q "yourusername" || echo "$REPO_URL" | grep -q "your-repo"; then
+              echo "❌ ERROR: REPO_URL not configured!"
+              echo "Please add REPO_URL secret in GitHub repository settings"
               exit 1
             fi
 
-            echo "✅ REPO_URL is configured"
-            echo ""
+            echo "✅ REPO_URL configured"
+            echo "📥 Repository operations..."
 
             # Check if git repository exists
             if [ -d ".git" ]; then
