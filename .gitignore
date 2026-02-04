@@ -1,0 +1,14 @@
+.worktrees/
+node_modules
+/**/dist/
+*.log
+.DS_Store
+.env
+.vscode/
+.idea/
+*.iml
+coverage/
+build/
+tmp/
+/**/node_modules
+computing-marketplace/frontend/node_modules

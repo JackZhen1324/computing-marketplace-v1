@@ -1,0 +1,167 @@
+.zoneTabsSection {
+  padding: 80px 24px;
+  background: #ffffff;
+  border-top: 4px solid var(--zone-gradient);
+  transition: border-color 0.3s ease;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 42px !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+  margin-bottom: 16px !important;
+}
+
+.description {
+  font-size: 16px !important;
+  color: #4a5568 !important;
+}
+
+.tabsWrapper {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.tabs {
+  width: 100%;
+  max-width: 600px;
+}
+
+.tabs :global(.ant-tabs-nav) {
+  margin-bottom: 0;
+}
+
+.tabs :global(.ant-tabs-tab) {
+  padding: 16px 24px !important;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4a5568;
+  transition: all var(--transition-base);
+}
+
+.tabs :global(.ant-tabs-tab:hover) {
+  color: var(--color-primary);
+}
+
+.tabs :global(.ant-tabs-tab-active) {
+  /* background: var(--zone-gradient) !important; */
+  border-radius: var(--radius-lg);
+  color: #1a1a1a !important;
+  font-weight: 700 !important;
+  opacity: 1;
+  transition: all var(--transition-base);
+}
+
+.tabs :global(.ant-tabs-ink-bar) {
+  display: none;
+}
+
+.tabLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabIcon {
+  font-size: 20px;
+}
+
+.indicator {
+  display: none;
+}
+
+.subCategories {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.subCatButton {
+  padding: 8px 20px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.subCatButton:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.subCatButton.active {
+  background: var(--zone-gradient);
+  border-color: transparent;
+  color: white;
+}
+
+.viewMore {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.viewMoreButton {
+  background: var(--zone-gradient);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 40px;
+  height: auto;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  transition: all var(--transition-base);
+}
+
+.viewMoreButton:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.viewMoreButton a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .zoneTabsSection {
+    padding: 60px 16px;
+  }
+
+  .title {
+    font-size: 32px !important;
+  }
+
+  .tabs :global(.ant-tabs-tab) {
+    padding: 12px 16px !important;
+    font-size: 16px;
+  }
+
+  .subCategories {
+    gap: 8px;
+  }
+
+  .subCatButton {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+}

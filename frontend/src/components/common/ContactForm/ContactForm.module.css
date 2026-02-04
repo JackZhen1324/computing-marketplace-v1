@@ -1,0 +1,49 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.description {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.form {
+  margin-top: 24px;
+}
+
+.submitButton {
+  height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    margin: 0;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+}
