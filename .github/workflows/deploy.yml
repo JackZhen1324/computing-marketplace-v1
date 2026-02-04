@@ -9,26 +9,14 @@ on:
 env:
   PROJECT_NAME: computing-marketplace-frontend
   DEPLOY_PATH: /opt/computing-marketplace
+  # GitHub 仓库信息（用于服务器拉取代码）
+  REPO_URL: https://github.com/yourusername/your-repo.git  # 修改为你的仓库地址
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Copy files to server
-        uses: burnett01/rsync-deployments@6.0.0
-        with:
-          switches: -avzr --delete
-          path: frontend/
-          remote_path: ${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace' }}/frontend/
-          remote_host: ${{ secrets.SERVER_HOST }}
-          remote_user: ${{ secrets.SERVER_USER }}
-          remote_port: ${{ secrets.SERVER_PORT || 8222 }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Deploy to production server
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -36,29 +24,45 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || 8222 }}
-          timeout: 10m
+          timeout: 15m
           script_stop: true
           script: |
             # Set variables
             CONTAINER_NAME="computing-marketplace-frontend"
             DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace' }}"
             APP_PORT="${{ secrets.APP_PORT || 3000 }}"
+            REPO_URL="${{ secrets.REPO_URL || 'https://github.com/yourusername/your-repo.git' }}"
+            BRANCH="${{ secrets.BRANCH || 'main' }}"
 
             echo "🚀 Starting deployment..."
             echo "Deploy directory: $DEPLOY_DIR"
             echo "Container name: $CONTAINER_NAME"
             echo "App port: $APP_PORT"
+            echo "Repository: $REPO_URL"
+            echo "Branch: $BRANCH"
 
             # Create deploy directory
             sudo mkdir -p $DEPLOY_DIR
             cd $DEPLOY_DIR
 
-            # Check if frontend directory exists and has files
-            if [ ! -d "frontend" ] || [ -z "$(ls -A frontend)" ]; then
-              echo "❌ Error: frontend directory is empty or does not exist"
-              echo "Please check if rsync copied the files correctly"
+            # Clone or pull repository
+            if [ -d ".git" ]; then
+              echo "📥 Pulling latest code from repository..."
+              git fetch origin
+              git reset --hard origin/$BRANCH
+              git checkout $BRANCH
+            else
+              echo "📥 Cloning repository..."
+              git clone --depth 1 --branch $BRANCH $REPO_URL .
+            fi
+
+            # Check if frontend directory exists
+            if [ ! -d "frontend" ]; then
+              echo "❌ Error: frontend directory not found in repository"
               exit 1
             fi
+
+            echo "✅ Code updated successfully"
 
             # Backup current docker-compose.yml if exists
             if [ -f docker-compose.yml ]; then
@@ -144,3 +148,4 @@ jobs:
             echo ""
             echo "✅ Deployment completed successfully!"
             echo "🌐 Application is running at: http://localhost:$APP_PORT"
+

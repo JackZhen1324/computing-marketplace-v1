@@ -5,8 +5,9 @@
 ## 部署方式
 
 **本配置采用服务器本地构建方式**，无需 Docker Hub 访问。
-- GitHub Actions 通过 rsync 将源代码同步到服务器
+- 服务器直接从 GitHub 拉取代码（git clone/pull）
 - 服务器上直接构建 Docker 镜像并部署
+- **速度最快**：不通过 GitHub Actions 中转代码
 - 适用于无法访问 Docker Hub 的服务器环境
 
 ## 前置条件
@@ -31,7 +32,18 @@
 | `SERVER_USER` | SSH 登录用户名 | `root` 或 `ubuntu` | 服务器 SSH 用户名 |
 | `SERVER_PORT` | SSH 端口 | `8222` | 你的 SSH 端口 |
 | `SSH_PRIVATE_KEY` | SSH 私钥 | `-----BEGIN OPENSSH PRIVATE KEY-----...` | 见步骤 2 |
+| `REPO_URL` | **GitHub 仓库地址** | `https://github.com/username/repo.git` | **必须配置**！见下方说明 |
 | `APP_URL` | 应用访问地址（健康检查用） | `http://your-domain.com:3000` | 你的应用域名或公网 IP |
+
+> **🔑 重要**: `REPO_URL` 是新增加的必需配置！使用完整的 GitHub 仓库地址。
+>
+> **获取方式**:
+> 1. 访问你的 GitHub 仓库页面
+> 2. 点击绿色 "Code" 按钮
+> 3. 选择 "HTTPS" 标签
+> 4. 复制仓库地址（格式：`https://github.com/username/repo.git`）
+>
+> **示例**: 如果你的仓库是 `https://github.com/zhangsan/computing-marketplace`，则 `REPO_URL` = `https://github.com/zhangsan/computing-marketplace.git`
 
 ### 可选的 Secrets
 
@@ -39,6 +51,7 @@
 |------------|------|--------|
 | `DEPLOY_PATH` | 服务器部署目录 | `/opt/computing-marketplace` |
 | `APP_PORT` | 应用端口（宿主机） | `3000` |
+| `BRANCH` | Git 分支名 | `main` |
 
 ## 步骤 2: 生成 SSH 密钥对
 
@@ -107,7 +120,7 @@ ssh -i ~/.ssh/github_actions_key user@your-server-ip
 
 ## 步骤 4: 服务器准备
 
-### 4.1 安装 Docker 和 Docker Compose
+### 4.1 安装 Docker、Docker Compose 和 Git
 
 ```bash
 # 安装 Docker
@@ -122,9 +135,40 @@ sudo systemctl enable docker
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
+# 安装 Git（用于从 GitHub 拉取代码）
+sudo apt update
+sudo apt install -y git
+
 # 验证安装
 docker --version
 docker-compose --version
+git --version
+```
+
+### 4.1.1 配置 Git（可选）
+
+如果服务器无法直接访问 GitHub，可以配置代理或使用镜像：
+
+```bash
+# 方法1: 配置代理（如果有代理服务器）
+git config --global http.proxy http://proxy-server:port
+git config --global https.proxy https://proxy-server:port
+
+# 方法2: 使用 SSH 方式访问 GitHub（推荐）
+# 1. 生成 SSH 密钥
+ssh-keygen -t ed25519 -C "server@github" -f ~/.ssh/github_ed25519
+
+# 2. 查看公钥
+cat ~/.ssh/github_ed25519.pub
+
+# 3. 将公钥添加到 GitHub:
+#    GitHub Settings → SSH and GPG keys → New SSH key
+
+# 4. 测试连接
+ssh -i ~/.ssh/github_ed25519 -T git@github.com
+
+# 5. 在配置 Secrets 时，REPO_URL 使用 SSH 格式:
+#    git@github.com:username/repo.git
 ```
 
 ### 4.2 配置防火墙（如果启用）
@@ -195,14 +239,25 @@ curl http://your-server-ip:3000
 - 确认公钥已正确添加到服务器的 `~/.ssh/authorized_keys`
 - 检查 `SERVER_USER` 和 `SERVER_HOST` 是否正确
 
-### 问题 2: 文件同步失败
+### 问题 2: Git 操作失败
 
-**错误**: `rsync: failed to connect to`
+**错误**: `fatal: repository 'https://github.com/...' not found`
 
 **解决**:
-- 检查服务器防火墙是否允许 SSH 端口（8222）
-- 确认 `SERVER_PORT` 配置正确
-- 测试 SSH 连接: `ssh -p 8222 user@server`
+1. 检查 `REPO_URL` 是否正确
+2. 确认仓库是公开的或已配置访问权限
+3. 测试 Git 连接：
+   ```bash
+   ssh -p 8222 user@your-server-ip
+   git clone https://github.com/username/repo.git /tmp/test
+   ```
+
+**错误**: `Could not resolve host: github.com`
+
+**解决**:
+- 服务器无法访问 GitHub，需要配置代理或使用 SSH 方式（见步骤 4.1.1）
+
+### 问题 3: 构建失败
 
 ### 问题 3: 容器启动失败
 
@@ -343,9 +398,9 @@ Push to main branch
        ↓
 [GitHub Actions 触发]
        ↓
-[rsync 同步源代码到服务器]
-       ↓
 [SSH 连接服务器]
+       ↓
+[服务器从 GitHub 拉取最新代码] (git pull)
        ↓
 [在服务器上构建 Docker 镜像]
        ↓
@@ -357,6 +412,11 @@ Push to main branch
        ↓
 [部署完成]
 ```
+
+**优势**：
+- ✅ **速度快**：服务器直接从 GitHub 拉取，不经过 Actions 中转
+- ✅ **节省流量**：Git 只传输变更的文件
+- ✅ **可靠性高**：利用 Git 的增量传输机制
 
 ## 修改工作流
 
