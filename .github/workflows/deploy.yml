@@ -69,9 +69,11 @@ jobs:
 
             echo "✅ REPO_URL configured"
             echo "📥 Repository operations..."
+            echo "Step 1: Checking for existing git directory..."
 
             # Check if git repository exists
             if [ -d ".git" ]; then
+              echo "Step 2: Found .git directory, will pull updates"
               echo "📥 Repository exists, pulling latest code..."
               git fetch origin || {
                 echo "❌ Git fetch failed"
@@ -86,10 +88,10 @@ jobs:
                 exit 1
               }
             else
+              echo "Step 2: No .git directory found, will clone"
               echo "📥 Cloning repository..."
               echo "Repository URL: $REPO_URL"
               echo "Branch: $BRANCH"
-              echo ""
 
               echo "⏳ Clone operation started..."
               git clone --depth 1 --branch $BRANCH $REPO_URL . || {
