@@ -27,6 +27,8 @@ jobs:
           timeout: 15m
           script_stop: true
           script: |
+            set -x  # 启用调试模式，打印每个命令
+
             # Set variables
             CONTAINER_NAME="computing-marketplace-frontend"
             DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace' }}"
@@ -41,32 +43,69 @@ jobs:
             echo "Repository: $REPO_URL"
             echo "Branch: $BRANCH"
 
+            # Check current directory
+            echo "📍 Current directory: $(pwd)"
+
             # Create deploy directory
-            sudo mkdir -p $DEPLOY_DIR
-            cd $DEPLOY_DIR
+            echo "📁 Creating deploy directory..."
+            sudo mkdir -p $DEPLOY_DIR || {
+              echo "❌ Failed to create deploy directory"
+              exit 1
+            }
+            echo "✅ Deploy directory created"
+
+            cd $DEPLOY_DIR || {
+              echo "❌ Failed to change to deploy directory"
+              exit 1
+            }
+            echo "📍 Changed to: $(pwd)"
 
             # Clone or pull repository
             if [ -d ".git" ]; then
               echo "📥 Pulling latest code from repository..."
-              git fetch origin
-              git reset --hard origin/$BRANCH
-              git checkout $BRANCH
+              git fetch origin || {
+                echo "❌ Git fetch failed"
+                exit 1
+              }
+              git reset --hard origin/$BRANCH || {
+                echo "❌ Git reset failed"
+                exit 1
+              }
+              git checkout $BRANCH || {
+                echo "❌ Git checkout failed"
+                exit 1
+              }
             else
               echo "📥 Cloning repository..."
-              git clone --depth 1 --branch $BRANCH $REPO_URL .
-            fi
-
-            # Check if frontend directory exists
-            if [ ! -d "frontend" ]; then
-              echo "❌ Error: frontend directory not found in repository"
-              exit 1
+              echo "Cloning from: $REPO_URL"
+              git clone --depth 1 --branch $BRANCH $REPO_URL . || {
+                echo "❌ Git clone failed"
+                echo "Please check:"
+                echo "1. REPO_URL is correct: $REPO_URL"
+                echo "2. Repository is public or access token is configured"
+                echo "3. Server can access GitHub"
+                exit 1
+              }
             fi
 
             echo "✅ Code updated successfully"
 
+            # List directory contents
+            echo "📂 Directory contents:"
+            ls -la
+
+            # Check if frontend directory exists
+            if [ ! -d "frontend" ]; then
+              echo "❌ Error: frontend directory not found in repository"
+              echo "Available directories:"
+            ls -d */
+              exit 1
+            fi
+
             # Backup current docker-compose.yml if exists
             if [ -f docker-compose.yml ]; then
               cp docker-compose.yml docker-compose.yml.backup-$(date +%Y%m%d-%H%M%S)
+              echo "✅ Backed up docker-compose.yml"
             fi
 
             # Create docker-compose.yml
@@ -98,11 +137,16 @@ jobs:
                 driver: bridge
             EOF
 
+            echo "✅ docker-compose.yml created"
+
             # Stop and remove old container
             echo "🛑 Stopping old container..."
             if docker ps -a | grep -q $CONTAINER_NAME; then
               docker stop $CONTAINER_NAME 2>/dev/null || true
               docker rm $CONTAINER_NAME 2>/dev/null || true
+              echo "✅ Old container stopped"
+            else
+              echo "ℹ️ No old container found"
             fi
 
             # Remove old image to force rebuild
@@ -111,10 +155,19 @@ jobs:
 
             # Build and start new container
             echo "🔨 Building new image..."
-            docker-compose build --no-cache
+            docker-compose build --no-cache || {
+              echo "❌ Docker build failed"
+              echo "Showing build logs:"
+            docker-compose logs
+              exit 1
+            }
 
             echo "🚀 Starting container..."
-            docker-compose up -d
+            docker-compose up -d || {
+              echo "❌ Failed to start container"
+              docker-compose logs
+              exit 1
+            }
 
             # Wait for container to be healthy
             echo "⏳ Waiting for container to be healthy..."
@@ -134,6 +187,8 @@ jobs:
 
             if [ $WAIT_TIME -ge $MAX_WAIT ]; then
               echo "⚠️  Health check timed out"
+              echo "Container logs:"
+              docker logs $CONTAINER_NAME
             fi
 
             # Show container status
