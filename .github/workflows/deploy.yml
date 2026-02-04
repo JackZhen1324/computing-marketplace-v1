@@ -61,17 +61,32 @@ jobs:
             echo ""
 
             # Verify REPO_URL is configured
-            if echo "$REPO_URL" | grep -q "yourusername\|your-repo"; then
-              echo "❌ ERROR: REPO_URL is not configured!"
-              echo "Current value: $REPO_URL"
-              echo ""
-              echo "Please configure the REPO_URL secret in GitHub:"
-              echo "1. Go to GitHub repository → Settings → Secrets and variables → Actions"
-              echo "2. Add a new secret named 'REPO_URL'"
-              echo "3. Set the value to your GitHub repository URL (e.g., https://github.com/username/repo.git)"
-              echo ""
-              exit 1
-            fi
+            echo "🔍 Checking REPO_URL configuration..."
+            echo "REPO_URL value: $REPO_URL"
+
+            # Check if REPO_URL contains placeholder
+            case "$REPO_URL" in
+              *yourusername*|*your-repo*)
+                echo ""
+                echo "❌ ERROR: REPO_URL is not configured!"
+                echo "Current value: $REPO_URL"
+                echo ""
+                echo "You need to configure the REPO_URL secret in GitHub:"
+                echo "1. Go to your GitHub repository"
+                echo "2. Click Settings → Secrets and variables → Actions"
+                echo "3. Click 'New repository secret'"
+                echo "4. Name: REPO_URL"
+                echo "5. Value: https://github.com/YOUR_USERNAME/YOUR_REPO.git"
+                echo ""
+                echo "Example: If your repo is https://github.com/johndoe/my-project"
+                echo "         then REPO_URL = https://github.com/johndoe/my-project.git"
+                echo ""
+                exit 1
+                ;;
+            esac
+
+            echo "✅ REPO_URL is configured"
+            echo ""
 
             # Check if git repository exists
             if [ -d ".git" ]; then
@@ -94,29 +109,17 @@ jobs:
               echo "Branch: $BRANCH"
               echo ""
 
-              # Test network connectivity first
-              echo "Testing connectivity to GitHub..."
-              if curl -s --connect-timeout 5 https://github.com > /dev/null; then
-                echo "✅ GitHub is reachable"
-              else
-                echo "⚠️  Warning: Cannot reach GitHub.com"
-                echo "The server may not have internet access or GitHub is blocked"
+              echo "⏳ Clone operation started..."
+              git clone --depth 1 --branch $BRANCH $REPO_URL . || {
+                EXIT_CODE=$?
                 echo ""
-              fi
-
-              echo "Starting clone operation..."
-              git clone --depth 1 --branch $BRANCH $REPO_URL . 2>&1 || {
+                echo "❌ Git clone failed! (exit code: $EXIT_CODE)"
                 echo ""
-                echo "❌ Git clone failed!"
-                echo ""
-                echo "Troubleshooting steps:"
-                echo "1. Verify REPO_URL secret is correct: $REPO_URL"
-                echo "2. Make sure the repository is public"
-                echo "3. Check if server can access GitHub:"
-                echo "   ssh -p ${{ secrets.SERVER_PORT || 8222 }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}"
-                echo "   curl -I https://github.com"
-                echo "4. Test clone manually on server:"
-                echo "   git clone $REPO_URL /tmp/test-repo"
+                echo "Troubleshooting:"
+                echo "1. REPO_URL: $REPO_URL"
+                echo "2. Check if repository is public"
+                echo "3. Test from server:"
+                echo "   ssh -p ${{ secrets.SERVER_PORT || 8222 }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'git clone $REPO_URL /tmp/test'"
                 echo ""
                 exit 1
               }
