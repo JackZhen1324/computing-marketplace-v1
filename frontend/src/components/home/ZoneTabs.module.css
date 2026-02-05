@@ -99,18 +99,36 @@
   font-weight: 500;
   color: #4a5568;
   cursor: pointer;
-  transition: all var(--transition-base);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.subCatButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--zone-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .subCatButton:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .subCatButton.active {
   background: var(--zone-gradient);
   border-color: transparent;
   color: white;
+  box-shadow: 0 6px 16px rgba(63, 88, 250, 0.3);
+}
+
+.subCatButton span {
+  position: relative;
+  z-index: 1;
 }
 
 .viewMore {

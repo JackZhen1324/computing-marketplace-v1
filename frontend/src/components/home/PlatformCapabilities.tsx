@@ -71,11 +71,12 @@ const PlatformCapabilities = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5 },
+      scale: 1,
+      transition: { duration: 0.5, ease: 'easeOut' },
     },
   };
 
@@ -108,8 +109,12 @@ const PlatformCapabilities = () => {
               key={index}
               className={styles.gridItem}
               variants={itemVariants}
-              whileHover={{ y: -8 }}
-              transition={{ duration: 0.2 }}
+              whileHover={{
+                y: -8,
+                scale: 1.02,
+                transition: { duration: 0.3, ease: 'easeOut' },
+              }}
+              whileTap={{ scale: 0.98 }}
             >
               <Card className={styles.card} bordered={false}>
                 <div

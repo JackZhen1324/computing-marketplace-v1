@@ -165,14 +165,19 @@ const ZoneTabs = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {currentTab?.subCategories.map(cat => (
-              <button
+            {currentTab?.subCategories.map((cat, index) => (
+              <motion.button
                 key={cat.key}
                 className={`${styles.subCatButton} ${activeSubCategory === cat.key ? styles.active : ''}`}
                 onClick={() => setActiveSubCategory(cat.key)}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05, duration: 0.2 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {cat.label}
-              </button>
+                <span>{cat.label}</span>
+              </motion.button>
             ))}
           </motion.div>
         </AnimatePresence>
@@ -193,14 +198,20 @@ const ZoneTabs = () => {
         {/* View More Link */}
         <motion.div
           className={styles.viewMore}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.5 }}
         >
           <Link to={`/${activeTab}`}>
-            <Button size="large" className={styles.viewMoreButton}>
-              查看{getZoneName(activeTab)}全部产品
-            </Button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button size="large" className={styles.viewMoreButton}>
+                查看{getZoneName(activeTab)}全部产品
+              </Button>
+            </motion.div>
           </Link>
         </motion.div>
       </div>

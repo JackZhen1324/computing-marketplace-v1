@@ -1,13 +1,24 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Button, Typography, Space } from 'antd';
 import { ThunderboltOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { productsData } from '../../data/products';
+import { useInquiries } from '../../contexts/InquiryContext';
+import InquiryDialog from '../common/InquiryDialog';
+import ParticleEffect from './ParticleEffect';
 import styles from './HeroSection.module.css';
 
 const { Title, Paragraph, Text } = Typography;
 
 const HeroSection = () => {
+  const { addInquiry } = useInquiries();
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 300], [0, -50]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.8]);
+
   // Featured products for hero section
   const featuredProducts = [
     productsData.find(p => p.id === 'gpu-bare-metal-001'),
@@ -35,6 +46,29 @@ const HeroSection = () => {
     },
   };
 
+  const handleInquiryClick = (product: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedProduct(product);
+    setDialogVisible(true);
+  };
+
+  const handleInquirySubmit = (data: any) => {
+    if (selectedProduct) {
+      addInquiry(
+        selectedProduct.id,
+        selectedProduct.name,
+        selectedProduct.category,
+        data
+      );
+    }
+  };
+
+  const handleDialogClose = () => {
+    setDialogVisible(false);
+    setSelectedProduct(null);
+  };
+
   return (
     <motion.section
       className={styles.heroSection}
@@ -45,12 +79,30 @@ const HeroSection = () => {
       <div className={styles.heroBackground}>
         <div className={styles.gridOverlay}></div>
         <div className={styles.gradientOrb}></div>
+        <div className={styles.gradientOrb2}></div>
+        <ParticleEffect />
       </div>
 
-      <div className={styles.container}>
+      <motion.div
+        className={styles.container}
+        style={{ y: y1, opacity }}
+      >
         <motion.div className={styles.heroContent} variants={containerVariants}>
           {/* Left: Brand Info */}
           <motion.div className={styles.brandSection} variants={itemVariants}>
+            <div
+              className={styles.heroIcon}
+              style={{
+                fontSize: '80px',
+                marginBottom: '24px',
+                animation: 'float 3s ease-in-out infinite',
+                display: 'inline-block',
+                textAlign: 'center',
+              }}
+            >
+              🚀
+            </div>
+
             <div className={styles.heroBadge}>
               <ThunderboltOutlined /> 算力新未来
             </div>
@@ -119,7 +171,11 @@ const HeroSection = () => {
 
                     <div className={styles.cardFooter}>
                       <Text className={styles.price}>{product.price}</Text>
-                      <Button type="primary" size="small">
+                      <Button
+                        type="primary"
+                        size="small"
+                        onClick={(e) => handleInquiryClick(product, e)}
+                      >
                         立即咨询
                       </Button>
                     </div>
@@ -129,7 +185,15 @@ const HeroSection = () => {
             </div>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
+
+      {/* Inquiry Dialog */}
+      <InquiryDialog
+        visible={dialogVisible}
+        onClose={handleDialogClose}
+        product={selectedProduct || { id: '', name: '', category: '' }}
+        onSubmit={handleInquirySubmit}
+      />
     </motion.section>
   );
 };

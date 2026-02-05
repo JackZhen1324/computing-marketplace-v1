@@ -55,14 +55,36 @@
   z-index: 2;
 }
 
+.gradientOrb2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  bottom: -50px;
+  left: -50px;
+  filter: blur(60px);
+  animation: pulse 6s ease-in-out infinite reverse;
+  z-index: 2;
+}
+
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
     opacity: 0.5;
   }
   50% {
-    transform: scale(1.1);
-    opacity: 0.7;
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
   }
 }
 
@@ -75,14 +97,30 @@
 }
 
 .heroContent {
-  display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 50px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  gap: 50px;
+  text-align: center;
 }
 
 .brandSection {
   color: white;
+  text-align: center;
+}
+
+.heroIcon {
+  filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+  animation: heroIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes heroIconFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
 }
 
 .heroBadge {
@@ -141,11 +179,38 @@
   padding: 24px;
   box-shadow: var(--shadow-card);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all var(--transition-base);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.productCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.productCard:hover::before {
+  left: 100%;
+}
+
+.productCard:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
 .productCard a {
