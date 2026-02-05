@@ -1,0 +1,35 @@
+.page {
+  min-height: 100vh;
+  background: #f0f2f5;
+  padding: 24px;
+}
+
+.detailContent {
+  padding: 16px 0;
+}
+
+.detailItem {
+  display: flex;
+  alignItems: flex-start;
+  marginBottom: 12px;
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: #666;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.detailValue {
+  color: #1a1a1a;
+  flex: 1;
+  wordBreak: break-word;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+}
