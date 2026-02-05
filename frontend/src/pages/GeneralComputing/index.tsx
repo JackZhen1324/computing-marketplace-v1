@@ -1,5 +1,7 @@
 import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { Row, Col, Card, Typography, Button, Pagination } from 'antd';
+import { ThunderboltOutlined } from '@ant-design/icons';
 import { getProductsByCategory } from '../../data/products';
 import styles from './GeneralComputing.module.css';
 
@@ -52,19 +54,40 @@ const GeneralComputing = () => {
 
   return (
     <div className={styles.page}>
-      {/* Hero Section - Matching Design */}
+      {/* Hero Section */}
       <section className={styles.hero}>
+        <div className={styles.heroBackground}>
+          <div className={styles.gridOverlay}></div>
+          <div className={styles.gradientOrb}></div>
+          <div className={styles.gradientOrb2}></div>
+        </div>
+
         <div className={styles.heroContent}>
-          <Title level={2} className={styles.heroTitle}>
-            通用计算云主机
-          </Title>
-          <Text className={styles.heroSubtitle}>
-            提供安全稳定、可随时自助获取、弹性伸缩的计算服务，灵活计费，
-            极简运维，极大降低企业成本。
-          </Text>
-          <Text className={styles.heroHighlight}>
-            数百种实例规格，满足业务高弹性、高稳定诉求
-          </Text>
+          <motion.div
+            className={styles.heroIcon}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{ fontSize: '80px', marginBottom: '24px' }}
+          >
+            💻
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Title level={1} className={styles.heroTitle}>
+              通用计算云主机
+            </Title>
+            <Text className={styles.heroSubtitle}>
+              提供安全稳定、可随时自助获取、弹性伸缩的计算服务
+            </Text>
+            <Text className={styles.heroHighlight}>
+              数百种实例规格，灵活计费，极简运维，极大降低企业成本
+            </Text>
+          </motion.div>
         </div>
       </section>
 

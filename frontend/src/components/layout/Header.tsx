@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, SettingOutlined } from '@ant-design/icons';
 import { navigationData } from '../../data/navigation';
 import DropdownPanel from './DropdownPanel';
 import styles from './Header.module.css';
@@ -124,6 +124,21 @@ const Header = () => {
             </li>
           );
         })}
+        {/* Admin Link */}
+        <li className={styles.navItem}>
+          <Link
+            to="/admin/inquiries"
+            className={`${styles.navLink} ${styles.adminLink}`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <SettingOutlined />
+            管理后台
+          </Link>
+        </li>
       </ul>
     </nav>
   );
@@ -176,6 +191,21 @@ const Header = () => {
               </Link>
             );
           })}
+          {/* Admin Link for Mobile */}
+          <Link
+            to="/admin/inquiries"
+            className={styles.mobileNavLink}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontWeight: 500,
+            }}
+          >
+            <SettingOutlined />
+            管理后台
+          </Link>
         </div>
       )}
     </>
