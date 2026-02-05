@@ -8,7 +8,7 @@ on:
 
 env:
   PROJECT_NAME: computing-marketplace-frontend
-  DEPLOY_PATH: /opt/computing-marketplace
+  DEPLOY_PATH: /opt/computing-marketplace/computing-marketplace-v1
   # GitHub 仓库信息（用于服务器拉取代码）
   REPO_URL: https://github.com/yourusername/your-repo.git  # 修改为你的仓库地址
 
@@ -29,7 +29,7 @@ jobs:
           script: |
             # Set variables
             CONTAINER_NAME="computing-marketplace-frontend"
-            DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace' }}"
+            DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace/computing-marketplace-v1' }}"
             APP_PORT="${{ secrets.APP_PORT || 3000 }}"
             REPO_URL="${{ secrets.REPO_URL || 'https://github.com/yourusername/your-repo.git' }}"
             BRANCH="${{ secrets.BRANCH || 'main' }}"

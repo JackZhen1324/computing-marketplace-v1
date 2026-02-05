@@ -49,7 +49,7 @@
 
 | Secret 名称 | 说明 | 默认值 |
 |------------|------|--------|
-| `DEPLOY_PATH` | 服务器部署目录 | `/opt/computing-marketplace` |
+| `DEPLOY_PATH` | 服务器部署目录 | `/opt/computing-marketplace/computing-marketplace-v1` |
 | `APP_PORT` | 应用端口（宿主机） | `3000` |
 | `BRANCH` | Git 分支名 | `main` |
 
@@ -189,9 +189,9 @@ sudo ufw enable
 如果使用自定义部署路径：
 
 ```bash
-sudo mkdir -p /opt/computing-marketplace
-sudo chown $USER:$USER /opt/computing-marketplace
-cd /opt/computing-marketplace
+sudo mkdir -p /opt/computing-marketplace/computing-marketplace-v1
+sudo chown $USER:$USER /opt/computing-marketplace/computing-marketplace-v1
+cd /opt/computing-marketplace/computing-marketplace-v1
 ```
 
 ## 步骤 5: 首次部署测试
@@ -267,7 +267,7 @@ curl http://your-server-ip:3000
 ```bash
 # 在服务器上查看日志
 ssh -p 8222 user@your-server-ip
-cd /opt/computing-marketplace
+cd /opt/computing-marketplace/computing-marketplace-v1
 docker-compose logs
 docker-compose ps
 
@@ -377,7 +377,7 @@ sudo certbot renew --dry-run
 
 ```bash
 # 在服务器上执行
-cd /opt/computing-marketplace
+cd /opt/computing-marketplace/computing-marketplace-v1
 
 # 重新构建并启动
 docker-compose up -d --build

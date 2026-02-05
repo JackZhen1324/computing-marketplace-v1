@@ -19,7 +19,7 @@
 
 | Secret 名称 | 默认值 | 说明 |
 |------------|--------|------|
-| `DEPLOY_PATH` | `/opt/computing-marketplace` | 服务器部署目录 |
+| `DEPLOY_PATH` | `/opt/computing-marketplace/computing-marketplace-v1` | 服务器部署目录 |
 | `APP_PORT` | `3000` | 应用监听端口 |
 | `BRANCH` | `main` | Git 分支名 |
 
