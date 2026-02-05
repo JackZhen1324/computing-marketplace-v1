@@ -50,7 +50,7 @@
 | Secret 名称 | 说明 | 默认值 |
 |------------|------|--------|
 | `DEPLOY_PATH` | 服务器部署目录 | `/opt/computing-marketplace/computing-marketplace-v1` |
-| `APP_PORT` | 应用端口（宿主机） | `3000` |
+| `APP_PORT` | 应用端口（宿主机） | `9210` |
 | `BRANCH` | Git 分支名 | `main` |
 
 ## 步骤 2: 生成 SSH 密钥对
@@ -174,8 +174,8 @@ ssh -i ~/.ssh/github_ed25519 -T git@github.com
 ### 4.2 配置防火墙（如果启用）
 
 ```bash
-# 开放应用端口（如 3000）
-sudo ufw allow 3000/tcp
+# 开放应用端口（如 9210）
+sudo ufw allow 9210/tcp
 
 # 开放 SSH 端口（根据你的配置，如 8222）
 sudo ufw allow 8222/tcp

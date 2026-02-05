@@ -30,7 +30,7 @@ jobs:
             # Set variables
             CONTAINER_NAME="computing-marketplace-frontend"
             DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace/computing-marketplace-v1' }}"
-            APP_PORT="${{ secrets.APP_PORT || 3000 }}"
+            APP_PORT="${{ secrets.APP_PORT || 9210 }}"
             REPO_URL="${{ secrets.REPO_URL || 'https://github.com/yourusername/your-repo.git' }}"
             BRANCH="${{ secrets.BRANCH || 'main' }}"
 
@@ -140,7 +140,7 @@ jobs:
 
             # Create docker-compose.yml
             echo "📝 Creating docker-compose.yml..."
-            cat > docker-compose.yml << 'EOF'
+            cat > docker-compose.yml << EOF
             version: '3.8'
 
             services:
@@ -150,7 +150,7 @@ jobs:
                   dockerfile: Dockerfile
                 container_name: computing-marketplace-frontend
                 ports:
-                  - "3000:8080"
+                  - "\${APP_PORT}:8080"
                 restart: unless-stopped
                 environment:
                   - NODE_ENV=production
@@ -217,7 +217,7 @@ jobs:
             WAIT_TIME=0
             while [ $WAIT_TIME -lt $MAX_WAIT ]; do
               if docker ps | grep -q $CONTAINER_NAME; then
-                if curl -f -s "http://localhost:3000/" > /dev/null 2>&1; then
+                if curl -f -s "http://localhost:$APP_PORT/" > /dev/null 2>&1; then
                   echo "✅ Container is healthy and responding!"
                   break
                 fi

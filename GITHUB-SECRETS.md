@@ -20,7 +20,7 @@
 | Secret 名称 | 默认值 | 说明 |
 |------------|--------|------|
 | `DEPLOY_PATH` | `/opt/computing-marketplace/computing-marketplace-v1` | 服务器部署目录 |
-| `APP_PORT` | `3000` | 应用监听端口 |
+| `APP_PORT` | `9210` | 应用监听端口 |
 | `BRANCH` | `main` | Git 分支名 |
 
 ## 示例配置
@@ -30,7 +30,7 @@
 - SSH 端口: `8222` ⭐
 - SSH 用户: `root`
 - GitHub 仓库: `https://github.com/username/computing-marketplace.git`
-- 应用地址: `http://123.45.67.89:3000`
+- 应用地址: `http://123.45.67.89:9210`
 
 则你需要配置的 Secrets：
 
@@ -42,7 +42,7 @@ SSH_PRIVATE_KEY = -----BEGIN OPENSSH PRIVATE KEY-----
                 ...完整的私钥内容...
                 -----END OPENSSH PRIVATE KEY-----
 REPO_URL = https://github.com/username/computing-marketplace.git
-APP_URL = http://123.45.67.89:3000
+APP_URL = http://123.45.67.89:9210
 ```
 
 **⚠️ 重要**: 将 `REPO_URL` 修改为你实际的 GitHub 仓库地址！
