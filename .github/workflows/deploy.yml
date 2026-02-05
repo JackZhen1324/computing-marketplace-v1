@@ -28,225 +28,40 @@ jobs:
           script_stop: true
           script: |
             # Set variables
-            CONTAINER_NAME="computing-marketplace-frontend"
-            DEPLOY_DIR="${{ secrets.DEPLOY_PATH || '/opt/computing-marketplace/computing-marketplace-v1' }}"
             APP_PORT="${{ secrets.APP_PORT || 9210 }}"
-            REPO_URL="${{ secrets.REPO_URL || 'https://github.com/yourusername/your-repo.git' }}"
-            BRANCH="${{ secrets.BRANCH || 'main' }}"
+            DEPLOY_DIR="/opt/computing-marketplace/computing-marketplace-v1/frontend"
 
             echo "🚀 Starting deployment..."
             echo "Deploy directory: $DEPLOY_DIR"
-            echo "Container name: $CONTAINER_NAME"
             echo "App port: $APP_PORT"
-            echo "Repository: $REPO_URL"
-            echo "Branch: $BRANCH"
             echo ""
 
-            # Check current directory
-            echo "📍 Current directory: $(pwd)"
-
-            # Create deploy directory
-            echo "📁 Creating deploy directory..."
-            sudo mkdir -p $DEPLOY_DIR || {
-              echo "❌ Failed to create deploy directory"
-              exit 1
-            }
-            echo "✅ Deploy directory created"
-
+            # Step 1: Change to frontend directory
+            echo "📁 Step 1: Changing to frontend directory..."
             cd $DEPLOY_DIR || {
-              echo "❌ Failed to change to deploy directory"
+              echo "❌ Failed to change to directory: $DEPLOY_DIR"
               exit 1
             }
-            echo "📍 Changed to: $(pwd)"
-            echo "🔍 Checking REPO_URL: $REPO_URL"
+            echo "✅ Changed to: $(pwd)"
+            echo ""
 
-            # Check if REPO_URL contains placeholder
-            if echo "$REPO_URL" | grep -q "yourusername" || echo "$REPO_URL" | grep -q "your-repo"; then
-              echo "❌ ERROR: REPO_URL not configured!"
-              echo "Please add REPO_URL secret in GitHub repository settings"
+            # Step 2: Pull latest code
+            echo "📥 Step 2: Pulling latest code from GitHub..."
+            git pull origin main || {
+              echo "❌ Git pull failed"
               exit 1
-            fi
-
-            echo "✅ REPO_URL configured"
-            echo "📥 Repository operations..."
-            echo "Step 1: Checking for existing git directory..."
-
-            # Check if git repository exists
-            if [ -d ".git" ]; then
-              echo "Step 2: Found .git directory, will pull updates"
-              echo "📥 Repository exists, pulling latest code..."
-              git fetch origin || {
-                echo "❌ Git fetch failed"
-                exit 1
-              }
-              git reset --hard origin/$BRANCH || {
-                echo "❌ Git reset failed"
-                exit 1
-              }
-              git checkout $BRANCH || {
-                echo "❌ Git checkout failed"
-                exit 1
-              }
-            else
-              echo "Step 2: No .git directory found, will clone"
-              echo "📥 Cloning repository..."
-              echo "Repository URL: $REPO_URL"
-              echo "Branch: $BRANCH"
-
-              echo "⏳ Clone operation started..."
-              git clone --depth 1 --branch $BRANCH $REPO_URL . || {
-                EXIT_CODE=$?
-                echo ""
-                echo "❌ Git clone failed! (exit code: $EXIT_CODE)"
-                echo ""
-                echo "Troubleshooting:"
-                echo "1. REPO_URL: $REPO_URL"
-                echo "2. Check if repository is public"
-                echo "3. Test from server:"
-                echo "   ssh -p ${{ secrets.SERVER_PORT || 8222 }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'git clone $REPO_URL /tmp/test'"
-                echo ""
-                exit 1
-              }
-            fi
-
+            }
             echo "✅ Code updated successfully"
             echo ""
 
-            # List directory contents
-            echo "📂 Repository contents:"
-            ls -la
-            echo ""
-
-            # Check if frontend directory exists
-            if [ ! -d "frontend" ]; then
-              echo "❌ Error: frontend directory not found in repository"
-              echo ""
-              echo "Available directories:"
-              ls -d */ 2>/dev/null || echo "No directories found"
-              echo ""
-              echo "Please check your repository structure"
-              exit 1
-            fi
-
-            echo "✅ Frontend directory found"
-            echo ""
-
-            # Backup current docker-compose.yml if exists
-            if [ -f docker-compose.yml ]; then
-              BACKUP_FILE="docker-compose.yml.backup-$(date +%Y%m%d-%H%M%S)"
-              cp docker-compose.yml $BACKUP_FILE
-              echo "✅ Backed up docker-compose.yml to $BACKUP_FILE"
-            fi
-
-            # Create docker-compose.yml
-            echo "📝 Creating docker-compose.yml..."
-            cat > docker-compose.yml << EOF
-            version: '3.8'
-
-            services:
-              frontend:
-                build:
-                  context: ./frontend
-                  dockerfile: Dockerfile
-                container_name: computing-marketplace-frontend
-                ports:
-                  - "\${APP_PORT}:8080"
-                restart: unless-stopped
-                environment:
-                  - NODE_ENV=production
-                networks:
-                  - app-network
-                healthcheck:
-                  test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/"]
-                  interval: 30s
-                  timeout: 10s
-                  retries: 3
-                  start_period: 40s
-
-            networks:
-              app-network:
-                driver: bridge
-            EOF
-
-            echo "✅ docker-compose.yml created"
-            echo ""
-
-            # Stop and remove old container
-            echo "🛑 Checking for old containers..."
-            if docker ps -a | grep -q $CONTAINER_NAME; then
-              echo "Stopping old container: $CONTAINER_NAME"
-              docker stop $CONTAINER_NAME 2>/dev/null || true
-              docker rm $CONTAINER_NAME 2>/dev/null || true
-              echo "✅ Old container removed"
-            else
-              echo "ℹ️ No old container found"
-            fi
-            echo ""
-
-            # Remove old image to force rebuild
-            echo "🧹 Cleaning up old images..."
-            docker rmi ${DEPLOY_DIR}_frontend 2>/dev/null || true
-            echo ""
-
-            # Build and start new container
-            echo "🔨 Building Docker image..."
-            echo "This may take 5-10 minutes on first run..."
-            if docker-compose build --no-cache; then
-              echo "✅ Build completed"
-            else
-              echo "❌ Docker build failed"
-              echo "Build logs:"
+            # Step 3: Rebuild and restart container
+            echo "🐳 Step 3: Rebuilding and restarting container..."
+            docker-compose up -d --build || {
+              echo "❌ Docker compose failed"
               docker-compose logs
               exit 1
-            fi
-            echo ""
-
-            echo "🚀 Starting container..."
-            if docker-compose up -d; then
-              echo "✅ Container started"
-            else
-              echo "❌ Failed to start container"
-              docker-compose logs
-              exit 1
-            fi
-            echo ""
-
-            # Wait for container to be healthy
-            echo "⏳ Waiting for container to be ready..."
-            MAX_WAIT=60
-            WAIT_TIME=0
-            while [ $WAIT_TIME -lt $MAX_WAIT ]; do
-              if docker ps | grep -q $CONTAINER_NAME; then
-                if curl -f -s "http://localhost:$APP_PORT/" > /dev/null 2>&1; then
-                  echo "✅ Container is healthy and responding!"
-                  break
-                fi
-              fi
-              echo "   Waiting... ($WAIT_TIME/$MAX_WAIT seconds)"
-              sleep 5
-              WAIT_TIME=$((WAIT_TIME + 5))
-            done
-
-            if [ $WAIT_TIME -ge $MAX_WAIT ]; then
-              echo "⚠️  Health check timed out after ${MAX_WAIT}s"
-              echo "Container logs:"
-              docker logs --tail 50 $CONTAINER_NAME
-            fi
-            echo ""
-
-            # Show container status
-            echo "📊 Container status:"
-            docker ps -f name=$CONTAINER_NAME
-            echo ""
-
-            # Show recent logs
-            echo "📋 Recent container logs:"
-            docker logs --tail 20 $CONTAINER_NAME
-            echo ""
-
-            # Clean up old images
-            echo "🧹 Cleaning up old images (older than 72 hours)..."
-            docker image prune -af --filter "until=72h" 2>/dev/null || true
+            }
+            echo "✅ Container restarted successfully"
             echo ""
 
             echo "========================================"
@@ -254,12 +69,8 @@ jobs:
             echo "========================================"
             echo ""
             echo "🌐 Application is running at: http://localhost:$APP_PORT"
-            echo "📊 Container name: $CONTAINER_NAME"
-            echo "📂 Deploy directory: $DEPLOY_DIR"
             echo ""
-            echo "📝 Useful commands:"
-            echo "  View logs: docker logs -f $CONTAINER_NAME"
-            echo "  Stop: docker stop $CONTAINER_NAME"
-            echo "  Restart: docker restart $CONTAINER_NAME"
+            echo "📊 Container status:"
+            docker ps --filter "name=computing-marketplace"
             echo ""
 
