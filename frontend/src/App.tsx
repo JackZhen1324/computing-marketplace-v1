@@ -1,3 +1,11 @@
+/*
+ * @Author: zhen qian xhdp123@126.com
+ * @Date: 2026-02-04 10:22:10
+ * @LastEditors: zhen qian xhdp123@126.com
+ * @LastEditTime: 2026-02-05 14:42:23
+ * @FilePath: /computing-marketplace/frontend/src/App.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import AppLayout from './components/layout/AppLayout'
@@ -38,7 +46,7 @@ function App() {
             <Route path="solutions/service-platform" element={<ServicePlatform />} />
             <Route path="solutions/network-system" element={<NetworkSystem />} />
             <Route path="solutions/fusion-base" element={<FusionBase />} />
-            <Route path="news" element={<div style={{ padding: '50px', textAlign: 'center' }}>政策&新闻 - Coming Soon</div>} />
+            <Route path="news" element={<div style={{ padding: '50px', textAlign: 'center' }}>政策&新闻 - Coming Soon22222</div>} />
             <Route path="about" element={<div style={{ padding: '50px', textAlign: 'center' }}>关于我们 - Coming Soon</div>} />
           </Route>
         </Routes>
