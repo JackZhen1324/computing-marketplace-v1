@@ -29,10 +29,6 @@ const GPUCloudCard = ({ product }: GPUCloudCardProps) => {
     return price;
   };
 
-  const handleInquirySubmit = (data: any) => {
-    console.log('Inquiry submitted:', data);
-  };
-
   return (
     <Card
       hoverable
@@ -190,7 +186,6 @@ const GPUCloudCard = ({ product }: GPUCloudCardProps) => {
           name: product.name,
           category: product.category,
         }}
-        onSubmit={handleInquirySubmit}
       />
     </Card>
   );

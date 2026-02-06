@@ -21,10 +21,6 @@ const ApplianceCard = ({ product }: ApplianceCardProps) => {
   // DeepSeek special handling
   const isDeepSeek = product.name.includes('DeepSeek');
 
-  const handleInquirySubmit = (data: any) => {
-    console.log('Inquiry submitted:', data);
-  };
-
   return (
     <Card
       hoverable
@@ -224,7 +220,6 @@ const ApplianceCard = ({ product }: ApplianceCardProps) => {
           name: product.name,
           category: product.category,
         }}
-        onSubmit={handleInquirySubmit}
       />
     </Card>
   );

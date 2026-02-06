@@ -32,7 +32,7 @@ export const authService = {
       data
     );
 
-    const { user, accessToken, refreshToken } = response.data.data;
+    const { accessToken, refreshToken } = response.data.data;
     setAuthTokens(accessToken, refreshToken);
 
     return response.data.data;
@@ -44,7 +44,7 @@ export const authService = {
       data
     );
 
-    const { user, accessToken, refreshToken } = response.data.data;
+    const { accessToken, refreshToken } = response.data.data;
     setAuthTokens(accessToken, refreshToken);
 
     return response.data.data;

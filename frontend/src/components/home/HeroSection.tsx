@@ -4,7 +4,6 @@ import { Button, Typography, Space } from 'antd';
 import { ThunderboltOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { productsData } from '../../data/products';
-import { useInquiries } from '../../contexts/InquiryContext';
 import InquiryDialog from '../common/InquiryDialog';
 import ParticleEffect from './ParticleEffect';
 import styles from './HeroSection.module.css';
@@ -12,7 +11,6 @@ import styles from './HeroSection.module.css';
 const { Title, Paragraph, Text } = Typography;
 
 const HeroSection = () => {
-  const { addInquiry } = useInquiries();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const { scrollY } = useScroll();
@@ -51,17 +49,6 @@ const HeroSection = () => {
     e.stopPropagation();
     setSelectedProduct(product);
     setDialogVisible(true);
-  };
-
-  const handleInquirySubmit = (data: any) => {
-    if (selectedProduct) {
-      addInquiry(
-        selectedProduct.id,
-        selectedProduct.name,
-        selectedProduct.category,
-        data
-      );
-    }
   };
 
   const handleDialogClose = () => {
@@ -192,7 +179,6 @@ const HeroSection = () => {
         visible={dialogVisible}
         onClose={handleDialogClose}
         product={selectedProduct || { id: '', name: '', category: '' }}
-        onSubmit={handleInquirySubmit}
       />
     </motion.section>
   );

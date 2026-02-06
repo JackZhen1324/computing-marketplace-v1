@@ -76,7 +76,7 @@ const PlatformCapabilities = () => {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
+      transition: { duration: 0.5, ease: 'easeInOut' as const },
     },
   };
 
@@ -112,7 +112,7 @@ const PlatformCapabilities = () => {
               whileHover={{
                 y: -8,
                 scale: 1.02,
-                transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] },
+                transition: { duration: 0.3, ease: 'easeInOut' as const },
               }}
               whileTap={{ scale: 0.98 }}
             >

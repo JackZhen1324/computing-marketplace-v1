@@ -187,9 +187,8 @@ const GPUProductCard = ({ product }: GPUProductCardProps) => {
         product={{
           id: product.id,
           name: product.name,
-          category: product.category,
+          category: product.categoryId,
         }}
-        onSubmit={handleInquirySubmit}
       />
     </Card>
   );

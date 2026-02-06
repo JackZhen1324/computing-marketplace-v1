@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Card, Typography, Button, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { ThunderboltOutlined, StarOutlined, CheckOutlined } from '@ant-design/icons';
-import { useInquiries } from '../../contexts/InquiryContext';
 import InquiryDialog from '../common/InquiryDialog';
 import styles from './ProductGrid.module.css';
 
@@ -24,7 +23,6 @@ interface ProductGridProps {
 }
 
 const ProductGrid = ({ products, zone }: ProductGridProps) => {
-  const { addInquiry } = useInquiries();
   const [dialogVisible, setDialogVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -106,17 +104,6 @@ const ProductGrid = ({ products, zone }: ProductGridProps) => {
   const handleInquiryClick = (product: Product) => {
     setSelectedProduct(product);
     setDialogVisible(true);
-  };
-
-  const handleInquirySubmit = (data: any) => {
-    if (selectedProduct) {
-      addInquiry(
-        selectedProduct.id,
-        selectedProduct.name,
-        selectedProduct.category,
-        data
-      );
-    }
   };
 
   const handleDialogClose = () => {
@@ -259,7 +246,6 @@ const ProductGrid = ({ products, zone }: ProductGridProps) => {
         visible={dialogVisible}
         onClose={handleDialogClose}
         product={selectedProduct || { id: '', name: '', category: '' }}
-        onSubmit={handleInquirySubmit}
       />
     </>
   );

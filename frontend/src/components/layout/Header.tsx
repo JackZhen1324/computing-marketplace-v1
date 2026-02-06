@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button, Spin } from 'antd';
+import { Button } from 'antd';
 import { MenuOutlined, SettingOutlined } from '@ant-design/icons';
 import { navigationService, NavigationItem } from '../../services/api/navigation';
 import DropdownPanel from './DropdownPanel';
@@ -12,7 +12,6 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [navigationData, setNavigationData] = useState<NavigationItem[]>([]);
-  const [loadingNav, setLoadingNav] = useState(true);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
 
@@ -25,8 +24,6 @@ const Header = () => {
         console.error('Failed to load navigation:', error);
         // Use default navigation if API fails
         setNavigationData([]);
-      } finally {
-        setLoadingNav(false);
       }
     };
 
@@ -58,13 +55,13 @@ const Header = () => {
 
     // Direct matches
     for (const item of navigationData) {
-      if (item.path === path) {
+      if (item.path && item.path === path) {
         return path.replace('/', '') || 'home';
       }
       if (item.children) {
         for (const child of item.children) {
-          if (child.path === path) {
-            return item.path.replace('/', '');
+          if (child.path && child.path === path) {
+            return item.path?.replace('/', '') || 'home';
           }
         }
       }
@@ -76,7 +73,8 @@ const Header = () => {
   const activeKey = getActiveKey();
 
   // Helper function to check if a nav item is active
-  const isNavItemActive = (item: any) => {
+  const isNavItemActive = (item: NavigationItem) => {
+    if (!item.path) return false;
     const itemKey = item.path === '/' ? 'home' : item.path.replace('/', '');
     return activeKey === itemKey;
   };
@@ -109,7 +107,7 @@ const Header = () => {
   const renderDesktopNav = () => (
     <nav className={styles.nav}>
       <ul className={styles.navList}>
-        {navigationData.map((item) => {
+        {navigationData.filter(item => item.path).map((item) => {
           const isActive = isNavItemActive(item);
           const hasChildren = item.children && item.children.length > 0;
           const isDropdownOpen = openDropdown === item.path;
@@ -119,13 +117,13 @@ const Header = () => {
               key={item.path}
               className={styles.navItem}
               ref={(el) => {
-                if (el) navItemRefs.current.set(item.path, el);
+                if (el && item.path) navItemRefs.current.set(item.path, el);
               }}
-              onMouseEnter={() => hasChildren && handleDropdownEnter(item.path)}
+              onMouseEnter={() => hasChildren && item.path && handleDropdownEnter(item.path)}
               onMouseLeave={handleDropdownLeave}
             >
               <Link
-                to={item.path}
+                to={item.path!}
                 className={`${styles.navLink} ${isActive ? styles.active : ''}`}
               >
                 {item.label}
@@ -174,7 +172,7 @@ const Header = () => {
 
       {mobileMenuOpen && (
         <div className={styles.mobileMenu}>
-          {navigationData.map((item) => {
+          {navigationData.filter(item => item.path).map((item) => {
             const isActive = isNavItemActive(item);
 
             if (item.children) {
@@ -184,10 +182,10 @@ const Header = () => {
                     {item.label}
                   </div>
                   <div className={styles.mobileSubMenu}>
-                    {item.children.map((child) => (
+                    {item.children.filter(child => child.path).map((child) => (
                       <Link
                         key={child.path}
-                        to={child.path}
+                        to={child.path!}
                         className={styles.mobileSubLink}
                         onClick={() => setMobileMenuOpen(false)}
                       >
@@ -202,7 +200,7 @@ const Header = () => {
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                to={item.path!}
                 className={`${styles.mobileNavLink} ${isActive ? styles.active : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
               >
