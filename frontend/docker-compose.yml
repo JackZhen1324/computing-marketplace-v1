@@ -9,6 +9,9 @@ services:
     ports:
       - "9210:8080"
     restart: unless-stopped
+    extra_hosts:
+      # Map host.docker.internal to the host machine IP for Linux
+      - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
     networks:
