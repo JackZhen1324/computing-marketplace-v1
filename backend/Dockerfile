@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
 
@@ -28,6 +31,9 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl1.1-compat
+
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
 
@@ -35,12 +41,12 @@ RUN npm config set registry https://registry.npmmirror.com
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install production dependencies only
-RUN npm ci --only=production --prefer-offline --no-audit
+# Install production dependencies only (skip postinstall to avoid Prisma download)
+RUN npm ci --only=production --prefer-offline --no-audit --ignore-scripts
 
-# Copy built files from builder stage
+# Copy built files from builder stage (includes all node_modules)
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 
 # Generate Prisma client for production
