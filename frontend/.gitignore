@@ -1,0 +1,3 @@
+# Ignore local docker-compose.yml (we use the one from root directory)
+docker-compose.yml
+docker-compose.yml.backup
