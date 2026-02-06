@@ -8,7 +8,10 @@ export const authConfig = {
     saltRounds: 10,
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5174',
+    // Allow multiple origins for development and production
+    origin: process.env.CORS_ORIGIN
+      ? process.env.CORS_ORIGIN.split(',')
+      : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5177', 'http://localhost:9210'],
     credentials: true,
   },
 };
