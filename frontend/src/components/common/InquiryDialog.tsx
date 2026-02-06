@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { Modal, Form, Input, Checkbox, Radio, Button, message, Row, Col } from 'antd';
 import { UserOutlined, PhoneOutlined, MailOutlined, BankOutlined } from '@ant-design/icons';
-import type { Inquiry, InquiryFormData } from '../../types/inquiry';
-
-const { TextArea } = Input;
+import type { InquiryFormData } from '../../types/inquiry';
 
 interface InquiryDialogProps {
   visible: boolean;

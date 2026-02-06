@@ -114,7 +114,7 @@ const Solutions = () => {
             viewport={{ once: true }}
           >
             <Row gutter={[32, 32]}>
-              {solutionsList.map((solution, index) => (
+              {solutionsList.map((solution) => (
                 <Col xs={24} md={8} key={solution.id}>
                   <motion.div variants={itemVariants} whileHover={{ y: -8 }}>
                     <Link to={`/solutions/${solution.id}`} className={styles.solutionLink}>

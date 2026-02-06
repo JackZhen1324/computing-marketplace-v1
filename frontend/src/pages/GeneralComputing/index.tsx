@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Row, Col, Card, Typography, Button, Pagination } from 'antd';
-import { ThunderboltOutlined } from '@ant-design/icons';
 import { getProductsByCategory } from '../../data/products';
 import styles from './GeneralComputing.module.css';
 

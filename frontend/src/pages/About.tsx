@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import styles from './About.module.css';
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
 const About = () => {
   const values = [

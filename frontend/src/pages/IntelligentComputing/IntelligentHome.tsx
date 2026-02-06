@@ -235,7 +235,7 @@ const IntelligentHome = () => {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <motion.div
                 key={category.id}
                 className={styles.categoryCard}
