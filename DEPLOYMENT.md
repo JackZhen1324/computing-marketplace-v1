@@ -1,5 +1,26 @@
 # 部署架构说明
 
+## 📂 项目结构
+
+本项目采用**统一部署架构**，所有 Docker 配置集中在 `frontend/` 目录：
+
+```
+computing-marketplace-v1/
+├── frontend/                ← 主要工作目录，包含完整部署配置
+│   ├── docker-compose.yml   ← 唯一的 docker-compose 文件
+│   ├── Dockerfile           ← 前端镜像构建
+│   ├── nginx.conf           ← nginx 反向代理配置
+│   ├── deploy.sh            ← 自动部署脚本
+│   ├── .env.production      ← 生产环境变量
+│   └── src/                 ← 前端 React 源代码
+├── backend/                 ← 后端源代码（同级目录）
+│   ├── Dockerfile           ← 后端镜像构建
+│   ├── src/                 ← 后端 API 源代码
+│   └── prisma/              ← 数据库 schema
+├── QUICKSTART.md            ← 快速启动指南
+└── DEPLOYMENT.md            ← 本文件
+```
+
 ## 端口统一架构
 
 整个系统通过 **9210** 端口统一对外提供服务，nginx负责反向代理。
