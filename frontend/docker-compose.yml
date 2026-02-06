@@ -43,7 +43,7 @@ services:
   # Backend API Service
   backend:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
     container_name: computing-marketplace-backend
     ports:
