@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Modal, Form, Input, Checkbox, Radio, Button, message, Row, Col } from 'antd';
 import { UserOutlined, PhoneOutlined, MailOutlined, BankOutlined } from '@ant-design/icons';
-import type { InquiryFormData } from '../../types/inquiry';
+import { inquiriesService } from '../../services/api/inquiries';
 
 interface InquiryDialogProps {
   visible: boolean;
@@ -11,10 +11,9 @@ interface InquiryDialogProps {
     name: string;
     category: string;
   };
-  onSubmit: (data: InquiryFormData) => void;
 }
 
-const InquiryDialog = ({ visible, onClose, product, onSubmit }: InquiryDialogProps) => {
+const InquiryDialog = ({ visible, onClose, product }: InquiryDialogProps) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -23,15 +22,18 @@ const InquiryDialog = ({ visible, onClose, product, onSubmit }: InquiryDialogPro
       const values = await form.validateFields();
       setLoading(true);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Call real API
+      await inquiriesService.submitInquiry({
+        productId: product.id,
+        ...values,
+      });
 
-      onSubmit(values as InquiryFormData);
       message.success('咨询提交成功！我们会尽快联系您');
       form.resetFields();
       onClose();
-    } catch (error) {
-      console.error('Validation failed:', error);
+    } catch (error: any) {
+      console.error('Submit failed:', error);
+      message.error(error.response?.data?.message || '提交失败，请稍后重试');
     } finally {
       setLoading(false);
     }

@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import { Card, Tag } from 'antd';
 import { CheckOutlined, ThunderboltOutlined, StarOutlined } from '@ant-design/icons';
-import type { Product } from '../../data/products';
+import type { ProductWithDetails } from '../../services/types/api';
 import InquiryDialog from './InquiryDialog';
 
 interface GPUProductCardProps {
-  product: Product;
+  product: ProductWithDetails;
 }
 
 const GPUProductCard = ({ product }: GPUProductCardProps) => {
   const [dialogVisible, setDialogVisible] = useState(false);
 
   // Extract GPU model from specifications
-  const gpuModel = product.specifications.find(spec => spec.label === 'GPU型号')?.value || product.name;
-  const gpuMemory = product.specifications.find(spec => spec.label === 'GPU显存')?.value || 'N/A';
-  const cpu = product.specifications.find(spec => spec.label === 'CPU')?.value || 'N/A';
-  const memory = product.specifications.find(spec => spec.label === '内存')?.value || 'N/A';
-  const storage = product.specifications.find(spec => spec.label === '存储')?.value || 'N/A';
+  const gpuModel = product.specifications.find(spec => spec.specLabel === 'GPU型号')?.specValue || product.name;
+  const gpuMemory = product.specifications.find(spec => spec.specLabel === 'GPU显存')?.specValue || 'N/A';
+  const cpu = product.specifications.find(spec => spec.specLabel === 'CPU')?.specValue || 'N/A';
+  const memory = product.specifications.find(spec => spec.specLabel === '内存')?.specValue || 'N/A';
+  const storage = product.specifications.find(spec => spec.specLabel === '存储')?.specValue || 'N/A';
 
   // Parse price to format it correctly
   const formatPrice = (price: string) => {
@@ -27,11 +27,6 @@ const GPUProductCard = ({ product }: GPUProductCardProps) => {
       return `¥${numericValue}.00`;
     }
     return price;
-  };
-
-  const handleInquirySubmit = (data: any) => {
-    // Data is handled by InquiryDialog context
-    console.log('Inquiry submitted:', data);
   };
 
   return (
@@ -123,7 +118,7 @@ const GPUProductCard = ({ product }: GPUProductCardProps) => {
             lineHeight: 1,
           }}
         >
-          {formatPrice(product.price || '')}
+          {formatPrice(product.priceDisplay || '')}
           <span style={{ fontSize: '15px', fontWeight: 'normal', color: '#666' }}>
             /月 起
           </span>

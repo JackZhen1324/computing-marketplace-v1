@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
+import { Spin, Alert } from 'antd';
 import GPUProductCard from '../../components/common/GPUProductCard';
-import { getProductsByCategory } from '../../data/products';
+import { useProducts } from '../../services/hooks/useProducts';
 import styles from './GpuBareMetal.module.css';
 
 interface FilterState {
@@ -16,7 +17,7 @@ const GpuBareMetal = () => {
     vram: 'all',
   });
 
-  const products = getProductsByCategory('gpu-bare-metal');
+  const { products, loading, error } = useProducts({ category: 'gpu-bare-metal' });
 
   // VRAM filter options
   const vramOptions = [
@@ -44,8 +45,8 @@ const GpuBareMetal = () => {
         const searchLower = filters.search.toLowerCase();
         if (
           !product.name.toLowerCase().includes(searchLower) &&
-          !product.title.toLowerCase().includes(searchLower) &&
-          !product.description.toLowerCase().includes(searchLower)
+          !(product.title || '').toLowerCase().includes(searchLower) &&
+          !(product.description || '').toLowerCase().includes(searchLower)
         ) {
           return false;
         }
@@ -63,8 +64,8 @@ const GpuBareMetal = () => {
 
       // VRAM filter
       if (filters.vram !== 'all') {
-        const vramSpec = product.specifications.find(spec => spec.label === 'GPU显存');
-        if (vramSpec && !vramSpec.value.includes(filters.vram)) {
+        const vramSpec = product.specifications.find(spec => spec.specLabel === 'GPU显存');
+        if (vramSpec && !vramSpec.specValue.includes(filters.vram)) {
           return false;
         }
       }
@@ -76,6 +77,33 @@ const GpuBareMetal = () => {
   const handleFilterChange = (key: keyof FilterState, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className={styles.page}>
+        <div style={{ padding: '50px' }}>
+          <Alert
+            message="加载失败"
+            description={error}
+            type="error"
+            showIcon
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>

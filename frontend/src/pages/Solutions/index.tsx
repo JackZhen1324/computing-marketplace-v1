@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Row, Col, Typography, Card, Button } from 'antd';
+import { Row, Col, Typography, Card, Button, Spin, Alert } from 'antd';
 import { Link } from 'react-router-dom';
 import {
   ArrowRightOutlined,
@@ -7,14 +8,58 @@ import {
   NodeIndexOutlined,
   ApiOutlined,
 } from '@ant-design/icons';
-import { solutionsData } from '../../data/solutions';
+import { solutionsService } from '../../services/api/solutions';
+import type { SolutionWithBenefits } from '../../services/types/api';
 import styles from './Solutions.module.css';
 
 const { Title, Paragraph } = Typography;
 
 const Solutions = () => {
-  // Filter out the "solutions-home" entry as it's just for the homepage
-  const solutionsList = solutionsData.filter(s => s.id !== 'solutions-home');
+  const [solutionsList, setSolutionsList] = useState<SolutionWithBenefits[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSolutions = async () => {
+      try {
+        const data = await solutionsService.getSolutions();
+        setSolutionsList(data);
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Failed to load solutions');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSolutions();
+  }, []);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className={styles.page}>
+        <div style={{ padding: '50px' }}>
+          <Alert
+            message="加载失败"
+            description={error}
+            type="error"
+            showIcon
+          />
+        </div>
+      </div>
+    );
+  }
 
   // Icon mapping for solutions
   const getIconForSolution = (id: string) => {

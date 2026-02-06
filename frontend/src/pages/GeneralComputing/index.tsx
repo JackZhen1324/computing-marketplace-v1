@@ -1,13 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Row, Col, Card, Typography, Button, Pagination } from 'antd';
-import { getProductsByCategory } from '../../data/products';
+import { Row, Col, Card, Typography, Button, Pagination, Spin, Alert } from 'antd';
+import { useProducts } from '../../services/hooks/useProducts';
 import styles from './GeneralComputing.module.css';
 
 const { Title, Text } = Typography;
 
 const GeneralComputing = () => {
-  const products = getProductsByCategory('general');
+  const { products, loading, error } = useProducts({ category: 'general' });
 
   // Category filter state
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -50,6 +50,33 @@ const GeneralComputing = () => {
   }, [filteredProducts, currentPage]);
 
   const totalProducts = filteredProducts.length;
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <Spin size="large" />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className={styles.page}>
+        <div style={{ padding: '50px' }}>
+          <Alert
+            message="加载失败"
+            description={error}
+            type="error"
+            showIcon
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -142,7 +169,7 @@ const GeneralComputing = () => {
                   <div className={styles.productPricing}>
                     <Text className={styles.priceLabel}>包周期</Text>
                     <Text className={styles.price}>
-                      {product.price}
+                      {product.priceDisplay}
                     </Text>
                   </div>
 

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { MenuOutlined, SettingOutlined } from '@ant-design/icons';
-import { navigationData } from '../../data/navigation';
+import { navigationService, NavigationItem } from '../../services/api/navigation';
 import DropdownPanel from './DropdownPanel';
 import styles from './Header.module.css';
 
@@ -11,8 +11,27 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [navigationData, setNavigationData] = useState<NavigationItem[]>([]);
+  const [loadingNav, setLoadingNav] = useState(true);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
+
+  useEffect(() => {
+    const fetchNavigation = async () => {
+      try {
+        const data = await navigationService.getNavigation();
+        setNavigationData(data);
+      } catch (error) {
+        console.error('Failed to load navigation:', error);
+        // Use default navigation if API fails
+        setNavigationData([]);
+      } finally {
+        setLoadingNav(false);
+      }
+    };
+
+    fetchNavigation();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
