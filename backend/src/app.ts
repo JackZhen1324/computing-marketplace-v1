@@ -18,8 +18,47 @@ const createApp = (): Application => {
   // Security middleware
   app.use(helmet());
 
-  // CORS
-  app.use(cors(authConfig.cors));
+  // CORS - Allow requests from same origin and configured origins
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // In production, check if origin matches the allowed list
+      const allowedOrigins = process.env.CORS_ORIGIN
+        ? process.env.CORS_ORIGIN.split(',')
+        : [
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:5177',
+            'http://localhost:9210',
+            // Allow access from any port on localhost in development
+            /^http:\/\/localhost:\d+$/,
+            // Allow access from same-origin (when proxied through nginx)
+          ];
+
+      // Check if origin is allowed
+      const isAllowed = allowedOrigins.some(allowedOrigin => {
+        if (allowedOrigin instanceof RegExp) {
+          return allowedOrigin.test(origin);
+        }
+        return allowedOrigin === origin;
+      });
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        // In development, be more permissive
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`Origin ${origin} not in allowed list, but allowing in development mode`);
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
+    },
+    credentials: true,
+  }));
 
   // Body parsing middleware
   app.use(express.json());
