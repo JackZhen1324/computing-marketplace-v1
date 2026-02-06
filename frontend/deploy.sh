@@ -27,27 +27,28 @@ cd "$DEPLOY_DIR" || {
 echo -e "${GREEN}✅ Changed to: $(pwd)${NC}"
 echo ""
 
-# Step 2: Handle untracked docker-compose.yml
-echo -e "${YELLOW}📝 Step 2: Handling untracked files...${NC}"
-if [ -f "docker-compose.yml" ] && ! git ls-files --error-unmatch docker-compose.yml >/dev/null 2>&1; then
-  echo -e "${YELLOW}Found untracked docker-compose.yml, backing up...${NC}"
-  mv docker-compose.yml docker-compose.yml.backup
-  echo -e "${GREEN}✅ Backed up docker-compose.yml${NC}"
-fi
-echo ""
+# Step 2: Handle local changes and pull latest code
+echo -e "${YELLOW}📝 Step 2: Handling local changes and pulling latest code...${NC}"
 
-# Step 3: Pull latest code
-echo -e "${YELLOW}📥 Step 3: Pulling latest code from GitHub...${NC}"
-if git pull origin main 2>&1; then
-  echo -e "${GREEN}✅ Code updated successfully${NC}"
-else
-  echo -e "${RED}❌ Git pull failed${NC}"
+# Stash any local modifications
+if [ -n "$(git status --porcelain)" ]; then
+  echo -e "${YELLOW}📦 Found local changes, stashing...${NC}"
+  git stash push -m "Auto-stash before deployment $(date +%Y%m%d_%H%M%S)" || {
+    echo -e "${YELLOW}⚠️  Warning: Failed to stash changes, attempting reset...${NC}"
+  }
+fi
+
+# Pull latest code with fetch + reset to avoid conflicts
+git fetch origin main
+git reset --hard origin/main || {
+  echo -e "${RED}❌ Git reset failed${NC}"
   exit 1
-fi
+}
+echo -e "${GREEN}✅ Code updated successfully${NC}"
 echo ""
 
-# Step 4: Rebuild and restart container
-echo -e "${YELLOW}🐳 Step 4: Rebuilding and restarting container...${NC}"
+# Step 3: Rebuild and restart container
+echo -e "${YELLOW}🐳 Step 3: Rebuilding and restarting container...${NC}"
 if docker-compose up -d --build 2>&1; then
   echo -e "${GREEN}✅ Container restarted successfully${NC}"
 else

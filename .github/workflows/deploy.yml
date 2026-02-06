@@ -45,10 +45,21 @@ jobs:
             echo "✅ Changed to: $(pwd)"
             echo ""
 
-            # Step 2: Pull latest code
-            echo "📥 Step 2: Pulling latest code from GitHub..."
-            git pull origin main || {
-              echo "❌ Git pull failed"
+            # Step 2: Handle local changes and pull latest code
+            echo "📥 Step 2: Handling local changes and pulling latest code..."
+
+            # Stash any local modifications
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "📦 Found local changes, stashing..."
+              git stash push -m "Auto-stash before deployment $(date +%Y%m%d_%H%M%S)" || {
+                echo "⚠️  Warning: Failed to stash changes, attempting reset..."
+              }
+            fi
+
+            # Pull latest code with --force to handle conflicts
+            git fetch origin main
+            git reset --hard origin/main || {
+              echo "❌ Git reset failed"
               exit 1
             }
             echo "✅ Code updated successfully"
