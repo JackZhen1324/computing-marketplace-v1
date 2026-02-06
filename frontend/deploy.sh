@@ -1,78 +1,70 @@
 #!/bin/bash
 
-# 完整部署脚本：构建 -> 测试 -> 启动
-# Usage: ./deploy.sh [prod|dev]
+set -e  # Exit on any error
 
-ENV=${1:-prod}
+# Colors for output
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-echo "🚀 算力超市前端 - 一键部署"
-echo "================================"
+echo -e "${GREEN}🚀 Starting Deployment...${NC}"
+
+# Set variables
+APP_PORT="9210"
+DEPLOY_DIR="/opt/computing-marketplace/computing-marketplace-v1/frontend"
+
+echo "Deploy directory: $DEPLOY_DIR"
+echo "App port: $APP_PORT"
 echo ""
 
-# 检查Docker
-if ! docker info > /dev/null 2>&1; then
-    echo "❌ Docker未运行，请先启动Docker"
-    exit 1
-fi
+# Step 1: Change to frontend directory
+echo -e "${YELLOW}📁 Step 1: Changing to frontend directory...${NC}"
+cd "$DEPLOY_DIR" || {
+  echo -e "${RED}❌ Failed to change to directory: $DEPLOY_DIR${NC}"
+  exit 1
+}
+echo -e "${GREEN}✅ Changed to: $(pwd)${NC}"
+echo ""
 
-if [ "$ENV" = "dev" ]; then
-    echo "🔧 部署开发环境..."
-    COMPOSE_FILE="docker-compose.dev.yml"
-    PORT="5173"
+# Step 2: Handle untracked docker-compose.yml
+echo -e "${YELLOW}📝 Step 2: Handling untracked files...${NC}"
+if [ -f "docker-compose.yml" ] && ! git ls-files --error-unmatch docker-compose.yml >/dev/null 2>&1; then
+  echo -e "${YELLOW}Found untracked docker-compose.yml, backing up...${NC}"
+  mv docker-compose.yml docker-compose.yml.backup
+  echo -e "${GREEN}✅ Backed up docker-compose.yml${NC}"
+fi
+echo ""
+
+# Step 3: Pull latest code
+echo -e "${YELLOW}📥 Step 3: Pulling latest code from GitHub...${NC}"
+if git pull origin main 2>&1; then
+  echo -e "${GREEN}✅ Code updated successfully${NC}"
 else
-    echo "🚀 部署生产环境..."
-    COMPOSE_FILE="docker-compose.yml"
-    PORT="3000"
+  echo -e "${RED}❌ Git pull failed${NC}"
+  exit 1
 fi
+echo ""
 
-# 停止旧容器
-echo "1️⃣  停止旧容器..."
-docker-compose -f "$COMPOSE_FILE" down 2>/dev/null || true
-
-# 清理旧构建（可选）
-echo "2️⃣  清理旧构建..."
-docker builder prune -f 2>/dev/null || true
-
-# 构建新镜像
-echo "3️⃣  构建新镜像..."
-docker-compose -f "$COMPOSE_FILE" build --no-cache
-
-# 启动容器
-echo "4️⃣  启动容器..."
-docker-compose -f "$COMPOSE_FILE" up -d
-
-# 健康检查
-echo "5️⃣  健康检查..."
-MAX_ATTEMPTS=30
-ATTEMPT=0
-
-while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
-    if curl -s "http://localhost:$PORT/health" > /dev/null 2>&1; then
-        echo "✅ 健康检查通过"
-        break
-    fi
-
-    ATTEMPT=$((ATTEMPT + 1))
-    echo "   等待服务启动... ($ATTEMPT/$MAX_ATTEMPTS)"
-    sleep 2
-done
-
-if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-    echo "❌ 健康检查失败"
-    echo ""
-    echo "📋 查看日志:"
-    docker-compose -f "$COMPOSE_FILE" logs --tail=50
-    exit 1
+# Step 4: Rebuild and restart container
+echo -e "${YELLOW}🐳 Step 4: Rebuilding and restarting container...${NC}"
+if docker-compose up -d --build 2>&1; then
+  echo -e "${GREEN}✅ Container restarted successfully${NC}"
+else
+  echo -e "${RED}❌ Docker compose failed${NC}"
+  docker-compose logs
+  exit 1
 fi
+echo ""
 
-# 显示状态
+echo -e "${GREEN}========================================${NC}"
+echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
+echo -e "${GREEN}========================================${NC}"
 echo ""
-echo "✅ 部署成功！"
+echo -e "🌐 Application is running at: http://localhost:$APP_PORT"
 echo ""
-echo "📊 容器状态:"
-docker-compose -f "$COMPOSE_FILE" ps
+echo -e "${YELLOW}📊 Container status:${NC}"
+docker ps --filter "name=computing-marketplace"
 echo ""
-echo "🌐 访问地址: http://localhost:$PORT"
-echo "📝 查看日志: docker-compose -f $COMPOSE_FILE logs -f"
-echo "🛑 停止服务: ./stop-$ENV.sh"
-echo ""
+
+echo -e "${GREEN}Deployment completed at $(date)${NC}"
