@@ -5,11 +5,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install Chinese npm registry for faster downloads
+RUN npm config set registry https://registry.npmmirror.com
+
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with cache preference
+RUN npm ci --prefer-offline --no-audit
 
 # Copy source code
 COPY . .

@@ -3,12 +3,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Install Chinese npm registry for faster downloads
+RUN npm config set registry https://registry.npmmirror.com
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with verbose output
+RUN npm ci --prefer-offline --no-audit
 
 # Copy source code
 COPY . .
@@ -25,12 +28,15 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+# Install Chinese npm registry for faster downloads
+RUN npm config set registry https://registry.npmmirror.com
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --only=production --prefer-offline --no-audit
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
