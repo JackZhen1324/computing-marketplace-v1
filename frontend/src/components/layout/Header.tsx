@@ -23,7 +23,62 @@ const Header = () => {
       } catch (error) {
         console.error('Failed to load navigation:', error);
         // Use default navigation if API fails
-        setNavigationData([]);
+        setNavigationData([
+          {
+            id: '1',
+            label: '首页',
+            path: '/',
+            displayOrder: 0,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '2',
+            label: '智算专区',
+            path: '/intelligent-computing',
+            displayOrder: 1,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '3',
+            label: '通算专区',
+            path: '/general-computing',
+            displayOrder: 2,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '4',
+            label: '解决方案',
+            path: '/solutions',
+            displayOrder: 3,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '5',
+            label: '新闻',
+            path: '/news',
+            displayOrder: 4,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: '6',
+            label: '关于我们',
+            path: '/about',
+            displayOrder: 5,
+            isVisible: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        ]);
       }
     };
 
