@@ -84,6 +84,17 @@
   font-weight: 600;
 }
 
+.navLink.adminLink {
+  color: var(--color-primary);
+  background: rgba(63, 88, 250, 0.08);
+  border: 1px solid rgba(63, 88, 250, 0.2);
+}
+
+.navLink.adminLink:hover {
+  background: rgba(63, 88, 250, 0.15);
+  border-color: rgba(63, 88, 250, 0.3);
+}
+
 /* Dropdown styles */
 .nav :global(.ant-dropdown) {
   z-index: 1100;
