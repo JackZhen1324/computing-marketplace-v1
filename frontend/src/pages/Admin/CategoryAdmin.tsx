@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm, Image } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { categoriesService, Category } from '../../services/api/categories';
 
 const CategoryAdmin = () => {
@@ -172,14 +172,14 @@ const CategoryAdmin = () => {
             onConfirm={() => handleDelete(record.id)}
             okText="删除"
             cancelText="取消"
-            disabled={record._count?.products > 0}
+            disabled={(record._count?.products || 0) > 0}
           >
             <Button
               type="link"
               size="small"
               danger
               icon={<DeleteOutlined />}
-              disabled={record._count?.products > 0}
+              disabled={(record._count?.products || 0) > 0}
             >
               删除
             </Button>

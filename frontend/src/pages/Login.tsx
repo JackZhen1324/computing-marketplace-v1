@@ -4,8 +4,6 @@ import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api/auth';
 
-const { Tab } = Tabs;
-
 interface LoginFormValues {
   email: string;
   password: string;

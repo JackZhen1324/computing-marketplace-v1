@@ -1,6 +1,9 @@
 import apiClient from './client';
 import { ApiResponse, SolutionWithBenefits } from '../types/api';
 
+// Re-export types for convenience
+export type { SolutionWithBenefits };
+
 export interface CreateSolutionRequest {
   id: string;
   title: string;
