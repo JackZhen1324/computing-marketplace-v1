@@ -72,7 +72,7 @@ services:
   # Frontend Web Service
   frontend:
     build:
-      context: ./frontend
+      context: .
       dockerfile: Dockerfile
     container_name: computing-marketplace-frontend
     ports:
