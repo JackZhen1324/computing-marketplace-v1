@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: computing-marketplace-backend
     ports:
-      - "3000:3000"
+      - "9211:3000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://admin:password@postgres:5432/computing_marketplace?schema=public
