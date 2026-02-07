@@ -23,14 +23,15 @@ export const useInquiryDialog = () => {
     setSelectedProduct(null);
   };
 
-  const handleSubmit = (data: InquiryFormData) => {
+  const handleSubmit = async (data: InquiryFormData) => {
     if (selectedProduct) {
-      addInquiry(
+      await addInquiry(
         selectedProduct.id,
         selectedProduct.name,
         selectedProduct.category,
         data
       );
+      closeDialog();
     }
   };
 

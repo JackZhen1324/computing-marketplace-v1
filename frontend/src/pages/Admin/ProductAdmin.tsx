@@ -18,6 +18,7 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { productsService, CreateProductRequest, UpdateProductRequest } from '../../services/api/products';
 import { categoriesService, Category } from '../../services/api/categories';
+import ImageUpload from '../../components/ImageUpload';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -313,8 +314,8 @@ const ProductAdmin = () => {
                     <TextArea rows={3} placeholder="请输入产品描述" />
                   </Form.Item>
 
-                  <Form.Item name="imageUrl" label="图片URL">
-                    <Input placeholder="请输入图片URL" />
+                  <Form.Item name="imageUrl" label="产品图片">
+                    <ImageUpload />
                   </Form.Item>
 
                   <Form.Item name="priceDisplay" label="价格展示">

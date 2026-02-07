@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
 import { authConfig } from './config/auth';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import authRoutes from './routes/auth';
@@ -11,6 +12,7 @@ import solutionRoutes from './routes/solutions';
 import newsRoutes from './routes/news';
 import navigationRoutes from './routes/navigation';
 import inquiryRoutes from './routes/inquiries';
+import uploadRoutes from './routes/upload';
 import logger from './utils/logger';
 
 const createApp = (): Application => {
@@ -84,6 +86,9 @@ const createApp = (): Application => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  // Static files - serve uploaded images
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
   // Rate limiting
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -112,6 +117,7 @@ const createApp = (): Application => {
   app.use('/api/news', newsRoutes);
   app.use('/api/navigation', navigationRoutes);
   app.use('/api/inquiries', inquiryRoutes);
+  app.use('/api/upload', uploadRoutes);
 
   // 404 handler
   app.use(notFoundHandler);

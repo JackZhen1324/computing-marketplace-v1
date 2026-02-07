@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Table, Tag, Button, Space, Modal, Form, Select, Input, message, Card, Statistic, Row, Col } from 'antd';
 import {
   EyeOutlined,
@@ -7,8 +7,9 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   UserOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
-import { useInquiries } from '../../contexts/InquiryContext';
+import { inquiriesService } from '../../services/api/inquiries';
 import type { Inquiry } from '../../types/inquiry';
 import styles from './InquiryAdmin.module.css';
 
@@ -16,32 +17,50 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 const InquiryAdmin = () => {
-  const { inquiries, updateInquiry, deleteInquiry } = useInquiries();
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [loading, setLoading] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editForm] = Form.useForm();
 
+  const fetchInquiries = async () => {
+    setLoading(true);
+    try {
+      const data = await inquiriesService.getInquiries();
+      setInquiries(data);
+    } catch (error) {
+      console.error('Failed to fetch inquiries:', error);
+      message.error('获取询价列表失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInquiries();
+  }, []);
+
   const statusConfig = {
-    pending: { text: '待联系', color: 'orange', icon: <ClockCircleOutlined /> },
-    contacted: { text: '已联系', color: 'blue', icon: <UserOutlined /> },
-    negotiating: { text: '洽谈中', color: 'cyan', icon: <EditOutlined /> },
-    closed: { text: '已成交', color: 'green', icon: <CheckCircleOutlined /> },
-    cancelled: { text: '已取消', color: 'red', icon: <DeleteOutlined /> },
+    PENDING: { text: '待联系', color: 'orange', icon: <ClockCircleOutlined /> },
+    CONTACTED: { text: '已联系', color: 'blue', icon: <UserOutlined /> },
+    NEGOTIATING: { text: '洽谈中', color: 'cyan', icon: <EditOutlined /> },
+    CLOSED: { text: '已成交', color: 'green', icon: <CheckCircleOutlined /> },
+    CANCELLED: { text: '已取消', color: 'red', icon: <DeleteOutlined /> },
   };
 
   const priorityConfig = {
-    low: { text: '低', color: 'default' },
-    medium: { text: '中', color: 'blue' },
-    high: { text: '高', color: 'red' },
+    LOW: { text: '低', color: 'default' },
+    MEDIUM: { text: '中', color: 'blue' },
+    HIGH: { text: '高', color: 'red' },
   };
 
   const stats = {
     total: inquiries.length,
-    pending: inquiries.filter(i => i.status === 'pending').length,
-    contacted: inquiries.filter(i => i.status === 'contacted').length,
-    negotiating: inquiries.filter(i => i.status === 'negotiating').length,
-    closed: inquiries.filter(i => i.status === 'closed').length,
+    pending: inquiries.filter(i => i.status === 'PENDING').length,
+    contacted: inquiries.filter(i => i.status === 'CONTACTED').length,
+    negotiating: inquiries.filter(i => i.status === 'NEGOTIATING').length,
+    closed: inquiries.filter(i => i.status === 'CLOSED').length,
   };
 
   const handleViewDetail = (inquiry: Inquiry) => {
@@ -55,34 +74,21 @@ const InquiryAdmin = () => {
       status: inquiry.status,
       priority: inquiry.priority,
       notes: inquiry.notes || '',
-      assignee: inquiry.assignee || '',
     });
     setEditModalVisible(true);
-  };
-
-  const handleDelete = (inquiry: Inquiry) => {
-    Modal.confirm({
-      title: '确认删除',
-      content: `确定要删除来自 ${inquiry.customerName} 的咨询记录吗？`,
-      okText: '删除',
-      okType: 'danger',
-      cancelText: '取消',
-      onOk: () => {
-        deleteInquiry(inquiry.id);
-        message.success('删除成功');
-      },
-    });
   };
 
   const handleUpdateSubmit = async () => {
     try {
       const values = await editForm.validateFields();
-      updateInquiry(selectedInquiry!.id, values);
+      await inquiriesService.updateInquiry(selectedInquiry!.id, values);
       message.success('更新成功');
       setEditModalVisible(false);
       editForm.resetFields();
+      fetchInquiries();
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error('Update failed:', error);
+      message.error('更新失败');
     }
   };
 
@@ -115,20 +121,13 @@ const InquiryAdmin = () => {
     },
     {
       title: '意向产品',
-      key: 'interestedProducts',
+      key: 'productName',
       width: 200,
       render: (_: any, record: Inquiry) => (
         <div>
-          {record.interestedProducts?.slice(0, 2).map((product, index) => (
-            <Tag key={index} color="blue" style={{ fontSize: '12px', marginBottom: '4px', marginRight: '4px' }}>
-              {product}
-            </Tag>
-          ))}
-          {record.interestedProducts && record.interestedProducts.length > 2 && (
-            <Tag color="blue" style={{ fontSize: '12px' }}>
-              +{record.interestedProducts.length - 2}
-            </Tag>
-          )}
+          <Tag color="blue" style={{ fontSize: '12px' }}>
+            {record.productName}
+          </Tag>
         </div>
       ),
     },
@@ -136,7 +135,7 @@ const InquiryAdmin = () => {
       title: '意向规格',
       dataIndex: 'specification',
       key: 'specification',
-      width: 100,
+      width: 150,
       render: (value: string) => value || '-',
     },
     {
@@ -145,7 +144,9 @@ const InquiryAdmin = () => {
       key: 'priority',
       width: 100,
       render: (priority: keyof typeof priorityConfig) => (
-        <Tag color={priorityConfig[priority].color}>{priorityConfig[priority].text}</Tag>
+        <Tag color={priorityConfig[priority]?.color || 'default'}>
+          {priorityConfig[priority]?.text || priority}
+        </Tag>
       ),
     },
     {
@@ -154,8 +155,8 @@ const InquiryAdmin = () => {
       key: 'status',
       width: 120,
       render: (status: keyof typeof statusConfig) => (
-        <Tag icon={statusConfig[status].icon} color={statusConfig[status].color}>
-          {statusConfig[status].text}
+        <Tag icon={statusConfig[status]?.icon} color={statusConfig[status]?.color || 'default'}>
+          {statusConfig[status]?.text || status}
         </Tag>
       ),
     },
@@ -169,7 +170,7 @@ const InquiryAdmin = () => {
     {
       title: '操作',
       key: 'actions',
-      width: 200,
+      width: 150,
       fixed: 'right' as const,
       render: (_: any, record: Inquiry) => (
         <Space>
@@ -186,14 +187,6 @@ const InquiryAdmin = () => {
             onClick={() => handleEdit(record)}
           >
             编辑
-          </Button>
-          <Button
-            type="link"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            删除
           </Button>
         </Space>
       ),
@@ -246,15 +239,20 @@ const InquiryAdmin = () => {
       <Card
         title="咨询记录列表"
         extra={
-          <span style={{ fontSize: '14px', color: '#666' }}>
-            共 {inquiries.length} 条记录
-          </span>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchInquiries}
+            loading={loading}
+          >
+            刷新
+          </Button>
         }
       >
         <Table
           columns={columns}
           dataSource={inquiries}
           rowKey="id"
+          loading={loading}
           pagination={{
             pageSize: 10,
             showSizeChanger: true,
@@ -289,10 +287,10 @@ const InquiryAdmin = () => {
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>状态：</span>
                   <Tag
-                    icon={statusConfig[selectedInquiry.status].icon}
-                    color={statusConfig[selectedInquiry.status].color}
+                    icon={statusConfig[selectedInquiry.status as keyof typeof statusConfig]?.icon}
+                    color={statusConfig[selectedInquiry.status as keyof typeof statusConfig]?.color}
                   >
-                    {statusConfig[selectedInquiry.status].text}
+                    {statusConfig[selectedInquiry.status as keyof typeof statusConfig]?.text || selectedInquiry.status}
                   </Tag>
                 </div>
               </Col>
@@ -320,16 +318,10 @@ const InquiryAdmin = () => {
                   <span className={styles.detailValue}>{selectedInquiry.email}</span>
                 </div>
               </Col>
-              <Col span={24}>
+              <Col span={12}>
                 <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>意向产品：</span>
-                  <div className={styles.detailValue}>
-                    {selectedInquiry.interestedProducts?.map((product, index) => (
-                      <Tag key={index} color="blue" style={{ marginBottom: '4px' }}>
-                        {product}
-                      </Tag>
-                    ))}
-                  </div>
+                  <span className={styles.detailLabel}>产品名称：</span>
+                  <span className={styles.detailValue}>{selectedInquiry.productName}</span>
                 </div>
               </Col>
               {selectedInquiry.specification && (
@@ -343,8 +335,8 @@ const InquiryAdmin = () => {
               <Col span={12}>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>优先级：</span>
-                  <Tag color={priorityConfig[selectedInquiry.priority].color}>
-                    {priorityConfig[selectedInquiry.priority].text}
+                  <Tag color={priorityConfig[selectedInquiry.priority as keyof typeof priorityConfig]?.color || 'default'}>
+                    {priorityConfig[selectedInquiry.priority as keyof typeof priorityConfig]?.text || selectedInquiry.priority}
                   </Tag>
                 </div>
               </Col>
@@ -356,14 +348,6 @@ const InquiryAdmin = () => {
                   </span>
                 </div>
               </Col>
-              {selectedInquiry.assignee && (
-                <Col span={12}>
-                  <div className={styles.detailItem}>
-                    <span className={styles.detailLabel}>负责人：</span>
-                    <span className={styles.detailValue}>{selectedInquiry.assignee}</span>
-                  </div>
-                </Col>
-              )}
               {selectedInquiry.notes && (
                 <Col span={24}>
                   <div className={styles.detailItem}>
@@ -411,11 +395,11 @@ const InquiryAdmin = () => {
             rules={[{ required: true, message: '请选择状态' }]}
           >
             <Select size="large">
-              <Option value="pending">待联系</Option>
-              <Option value="contacted">已联系</Option>
-              <Option value="negotiating">洽谈中</Option>
-              <Option value="closed">已成交</Option>
-              <Option value="cancelled">已取消</Option>
+              <Option value="PENDING">待联系</Option>
+              <Option value="CONTACTED">已联系</Option>
+              <Option value="NEGOTIATING">洽谈中</Option>
+              <Option value="CLOSED">已成交</Option>
+              <Option value="CANCELLED">已取消</Option>
             </Select>
           </Form.Item>
 
@@ -425,17 +409,10 @@ const InquiryAdmin = () => {
             rules={[{ required: true, message: '请选择优先级' }]}
           >
             <Select size="large">
-              <Option value="low">低</Option>
-              <Option value="medium">中</Option>
-              <Option value="high">高</Option>
+              <Option value="LOW">低</Option>
+              <Option value="MEDIUM">中</Option>
+              <Option value="HIGH">高</Option>
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            label="负责人"
-            name="assignee"
-          >
-            <Input placeholder="请输入负责人姓名" size="large" />
           </Form.Item>
 
           <Form.Item
