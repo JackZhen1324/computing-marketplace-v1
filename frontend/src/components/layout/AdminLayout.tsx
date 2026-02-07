@@ -50,26 +50,41 @@ const AdminLayout = () => {
   };
 
   return (
-    <Layout className={styles.adminLayout}>
+    <Layout style={{ minHeight: 'calc(100vh - 72px)' }}>
       <Sider
         width={240}
         theme="light"
-        className={styles.sider}
+        style={{
+          overflow: 'auto',
+          height: 'calc(100vh - 72px)',
+          position: 'sticky',
+          top: '72px',
+          background: '#fff',
+          borderRight: '1px solid #f0f0f0',
+        }}
       >
-        <div className={styles.logo}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px 16px',
+          fontSize: '18px',
+          fontWeight: 'bold',
+          color: '#3F58FA',
+          borderBottom: '1px solid #f0f0f0',
+        }}>
           <TeamOutlined style={{ fontSize: '24px', marginRight: '8px' }} />
-          <span style={{ fontSize: '18px', fontWeight: 'bold' }}>管理后台</span>
+          <span>管理后台</span>
         </div>
         <Menu
           mode="inline"
           selectedKeys={[getSelectedKey()]}
-          style={{ borderRight: 0 }}
-          className={styles.menu}
+          style={{ borderRight: 0, padding: '16px 8px' }}
           items={menuItems}
         />
       </Sider>
-      <Layout className={styles.contentLayout}>
-        <Content className={styles.content}>
+      <Layout style={{ background: '#f5f5f5' }}>
+        <Content style={{ minHeight: 'calc(100vh - 72px)' }}>
           <Outlet />
         </Content>
       </Layout>
