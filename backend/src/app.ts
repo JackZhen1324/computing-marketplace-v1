@@ -40,6 +40,12 @@ const createApp = (): Application => {
             // Allow access from same-origin (when proxied through nginx)
           ];
 
+      // Additional regex patterns for dynamic origins
+      const dynamicPatterns = [
+        /^https?:\/\/[\d\.]+:\d+$/, // Allow any IP:port (http://1.2.3.4:9210)
+        /^https?:\/\/[\w\.-]+\.synology\.me(:\d+)?$/, // Allow any synology.me subdomain
+      ];
+
       // Check if origin is allowed
       const isAllowed = allowedOrigins.some(allowedOrigin => {
         if (allowedOrigin instanceof RegExp) {
@@ -48,7 +54,10 @@ const createApp = (): Application => {
         return allowedOrigin === origin;
       });
 
-      if (isAllowed) {
+      // Check dynamic patterns
+      const isDynamicAllowed = dynamicPatterns.some(pattern => pattern.test(origin));
+
+      if (isAllowed || isDynamicAllowed) {
         callback(null, true);
       } else {
         // In development, be more permissive
