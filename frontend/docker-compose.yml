@@ -76,7 +76,7 @@ services:
       dockerfile: Dockerfile
     container_name: computing-marketplace-frontend
     ports:
-      - "9210:8080"
+      - "9210:8443"
     environment:
       - NODE_ENV=production
     depends_on:
@@ -85,7 +85,7 @@ services:
       - app-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "--no-check-certificate", "https://localhost:8443/health"]
       interval: 30s
       timeout: 10s
       retries: 3
