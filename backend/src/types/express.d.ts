@@ -1,7 +1,13 @@
 import 'express';
 
-declare module 'express' {
-  interface Request {
-    query: any;
+declare global {
+  namespace Express {
+    interface Request {
+      query: any;
+      body: any;
+      params: any;
+    }
   }
 }
+
+export {};
