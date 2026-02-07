@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../config/database';
 import { authConfig } from '../config/auth';
 import { AuthRequest, TokenPayload } from '../middleware/auth.middleware';
-import redisClient from '../config/redis';
+import { redisClient } from '../config/redis';
 import { AppError } from '../middleware/error.middleware';
 
 export class AuthController {
