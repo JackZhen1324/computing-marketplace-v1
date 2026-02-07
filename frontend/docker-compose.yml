@@ -10,6 +10,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      TZ: Asia/Shanghai
     ports:
       - "5434:5432"
     volumes:
@@ -27,6 +28,8 @@ services:
   redis:
     image: redis:7-alpine
     container_name: computing-marketplace-redis
+    environment:
+      TZ: Asia/Shanghai
     ports:
       - "6379:6379"
     volumes:
@@ -54,6 +57,7 @@ services:
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
       - CORS_ORIGIN=http://localhost:9210,http://zqian24.synology.me:9210,https://zqian24.synology.me
+      - TZ=Asia/Shanghai
     depends_on:
       postgres:
         condition: service_healthy
@@ -79,6 +83,7 @@ services:
       - "9210:8443"
     environment:
       - NODE_ENV=production
+      - TZ=Asia/Shanghai
     depends_on:
       - backend
     networks:
@@ -100,6 +105,7 @@ services:
     environment:
       ADMINER_DEFAULT_SERVER: postgres
       ADMINER_DESIGN: nette
+      TZ: Asia/Shanghai
     depends_on:
       - postgres
     networks:
