@@ -21,7 +21,12 @@ import GeneralComputing from './pages/GeneralComputing'
 import ServicePlatform from './pages/Solutions/ServicePlatform'
 import NetworkSystem from './pages/Solutions/NetworkSystem'
 import FusionBase from './pages/Solutions/FusionBase'
+import Login from './pages/Login'
 import InquiryAdmin from './pages/Admin/InquiryAdmin'
+import CategoryAdmin from './pages/Admin/CategoryAdmin'
+import ProductAdmin from './pages/Admin/ProductAdmin'
+import NewsAdmin from './pages/Admin/NewsAdmin'
+import SolutionAdmin from './pages/Admin/SolutionAdmin'
 import News from './pages/News'
 import About from './pages/About'
 
@@ -40,6 +45,7 @@ function App() {
       <InquiryProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="intelligent-computing" element={<IntelligentHome />} />
@@ -53,6 +59,10 @@ function App() {
               <Route path="solutions/network-system" element={<NetworkSystem />} />
               <Route path="solutions/fusion-base" element={<FusionBase />} />
               <Route path="admin/inquiries" element={<InquiryAdmin />} />
+              <Route path="admin/categories" element={<CategoryAdmin />} />
+              <Route path="admin/products" element={<ProductAdmin />} />
+              <Route path="admin/news" element={<NewsAdmin />} />
+              <Route path="admin/solutions" element={<SolutionAdmin />} />
               <Route path="news" element={<News />} />
               <Route path="about" element={<About />} />
             </Route>

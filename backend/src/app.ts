@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import { authConfig } from './config/auth';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import authRoutes from './routes/auth';
+import categoryRoutes from './routes/categories';
 import productRoutes from './routes/products';
 import solutionRoutes from './routes/solutions';
 import newsRoutes from './routes/news';
@@ -105,6 +106,7 @@ const createApp = (): Application => {
 
   // API routes
   app.use('/api/auth', authRoutes);
+  app.use('/api/categories', categoryRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/solutions', solutionRoutes);
   app.use('/api/news', newsRoutes);
