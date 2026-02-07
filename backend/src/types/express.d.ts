@@ -1,15 +1,7 @@
-import { UserRole } from '@prisma/client';
+import 'express';
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        userId: string;
-        email: string;
-        role: UserRole;
-      };
-    }
+declare module 'express' {
+  interface Request {
+    query: any;
   }
 }
-
-export {};
