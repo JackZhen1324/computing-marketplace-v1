@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import { InquiryProvider } from './contexts/InquiryContext'
 import AppLayout from './components/layout/AppLayout'
+import AdminLayout from './components/layout/AdminLayout'
 import Home from './pages/Home'
 import Solutions from './pages/Solutions'
 import IntelligentHome from './pages/IntelligentComputing/IntelligentHome'
@@ -46,6 +47,17 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
+
+            {/* Admin routes with AdminLayout */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="inquiries" element={<InquiryAdmin />} />
+              <Route path="categories" element={<CategoryAdmin />} />
+              <Route path="products" element={<ProductAdmin />} />
+              <Route path="news" element={<NewsAdmin />} />
+              <Route path="solutions" element={<SolutionAdmin />} />
+            </Route>
+
+            {/* Public routes with AppLayout */}
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
               <Route path="intelligent-computing" element={<IntelligentHome />} />
@@ -58,11 +70,6 @@ function App() {
               <Route path="solutions/service-platform" element={<ServicePlatform />} />
               <Route path="solutions/network-system" element={<NetworkSystem />} />
               <Route path="solutions/fusion-base" element={<FusionBase />} />
-              <Route path="admin/inquiries" element={<InquiryAdmin />} />
-              <Route path="admin/categories" element={<CategoryAdmin />} />
-              <Route path="admin/products" element={<ProductAdmin />} />
-              <Route path="admin/news" element={<NewsAdmin />} />
-              <Route path="admin/solutions" element={<SolutionAdmin />} />
               <Route path="news" element={<News />} />
               <Route path="about" element={<About />} />
             </Route>
