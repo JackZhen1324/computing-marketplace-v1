@@ -49,6 +49,7 @@ RUN npm ci --only=production --prefer-offline --no-audit --ignore-scripts
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /usr/local/bin/docker-entrypoint.sh /usr/local/bin/
 
 # Generate Prisma client for production
