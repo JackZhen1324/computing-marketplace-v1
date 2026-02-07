@@ -6,7 +6,7 @@
  * @FilePath: /computing-marketplace/frontend/src/App.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import { InquiryProvider } from './contexts/InquiryContext'
 import AppLayout from './components/layout/AppLayout'
@@ -50,6 +50,7 @@ function App() {
 
             {/* Admin routes with AdminLayout */}
             <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/inquiries" replace />} />
               <Route path="inquiries" element={<InquiryAdmin />} />
               <Route path="categories" element={<CategoryAdmin />} />
               <Route path="products" element={<ProductAdmin />} />
