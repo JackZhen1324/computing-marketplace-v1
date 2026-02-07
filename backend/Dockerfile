@@ -4,7 +4,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install OpenSSL for Prisma
-RUN apk add --no-cache openssl1.1-compat
+RUN apk add --no-cache openssl
 
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
@@ -32,7 +32,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install OpenSSL for Prisma
-RUN apk add --no-cache openssl1.1-compat
+RUN apk add --no-cache openssl
 
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
