@@ -42,12 +42,12 @@ function App() {
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
-              <Route path="intelligent" element={<IntelligentHome />} />
-              <Route path="intelligent/gpu-bare-metal" element={<GPUBareMetal />} />
-              <Route path="intelligent/gpu-cloud" element={<GPUCloud />} />
-              <Route path="intelligent/appliance" element={<Appliance />} />
-              <Route path="intelligent/maas" element={<MaaS />} />
-              <Route path="general" element={<GeneralComputing />} />
+              <Route path="intelligent-computing" element={<IntelligentHome />} />
+              <Route path="intelligent-computing/gpu-bare-metal" element={<GPUBareMetal />} />
+              <Route path="intelligent-computing/gpu-cloud" element={<GPUCloud />} />
+              <Route path="intelligent-computing/appliance" element={<Appliance />} />
+              <Route path="intelligent-computing/maas" element={<MaaS />} />
+              <Route path="general-computing" element={<GeneralComputing />} />
               <Route path="solutions" element={<Solutions />} />
               <Route path="solutions/service-platform" element={<ServicePlatform />} />
               <Route path="solutions/network-system" element={<NetworkSystem />} />
