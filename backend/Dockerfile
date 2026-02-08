@@ -9,19 +9,22 @@ RUN apk add --no-cache openssl
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
 
+# Set Prisma engines mirror for more reliable downloads
+ENV PRISMA_ENGINES_MIRROR=https://npmmirror.com/mirrors/prisma/
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies with verbose output
-RUN npm ci --prefer-offline --no-audit
+# Install dependencies without postinstall scripts to avoid Prisma download issues
+RUN npm ci --prefer-offline --no-audit --ignore-scripts
 
 # Copy source code and entrypoint script
 COPY . .
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Generate Prisma client (without running migrations)
+# Install and generate Prisma client separately
 RUN npx prisma generate
 
 # Build TypeScript
@@ -37,6 +40,9 @@ RUN apk add --no-cache openssl
 
 # Install Chinese npm registry for faster downloads
 RUN npm config set registry https://registry.npmmirror.com
+
+# Set Prisma engines mirror for more reliable downloads
+ENV PRISMA_ENGINES_MIRROR=https://npmmirror.com/mirrors/prisma/
 
 # Copy package files
 COPY package*.json ./
