@@ -118,37 +118,6 @@ const Header = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Get active key based on current path
-  const getActiveKey = () => {
-    const path = location.pathname;
-
-    // Check intelligent computing sub-pages
-    if (path.startsWith('/intelligent-computing/')) {
-      return 'intelligent-computing';
-    }
-
-    // Check solutions sub-pages
-    if (path.startsWith('/solutions/')) {
-      return 'solutions';
-    }
-
-    // Direct matches
-    for (const item of navigationData) {
-      if (item.path && item.path === path) {
-        return path.replace('/', '') || 'home';
-      }
-      if (item.children) {
-        for (const child of item.children) {
-          if (child.path && child.path === path) {
-            return item.path?.replace('/', '') || 'home';
-          }
-        }
-      }
-    }
-
-    return 'home';
-  };
-
   // Helper function to check if a nav item is active
   const isNavItemActive = (item: NavigationItem) => {
     if (!item.path) return false;
