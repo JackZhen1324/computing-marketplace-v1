@@ -190,7 +190,7 @@ const ModelCard = ({ model }: ModelCardProps) => {
         product={{
           id: model.id,
           name: model.name,
-          category: model.category,
+          category: 'maas', // MaaS models should use 'maas' category
         }}
       />
     </Card>
