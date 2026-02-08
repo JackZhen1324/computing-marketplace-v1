@@ -45,7 +45,7 @@ export const getQuickStats = async (req: Request, res: Response) => {
       : 0;
 
     const activeProducts = await prisma.product.count({
-      where: { active: true },
+      where: { isActive: true },
     });
 
     // 计算环比变化（与上一个周期对比）
@@ -294,7 +294,7 @@ export const getProductRanking = async (req: Request, res: Response) => {
 
     // 获取产品询价统计
     const products = await prisma.product.findMany({
-      where: { active: true },
+      where: { isActive: true },
       select: {
         id: true,
         name: true,
