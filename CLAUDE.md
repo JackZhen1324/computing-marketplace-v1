@@ -86,6 +86,37 @@ npm run preview
 
 **Note**: Frontend dev server runs on port 5177 by default.
 
+## Code Changes Workflow
+
+**IMPORTANT**: After making any code changes, follow this workflow:
+
+```bash
+# 1. Stage and commit changes
+git add <modified-files>
+git commit -m "feat: description of changes"
+
+# 2. Push to GitHub
+git push
+
+# 3. Restart Docker containers
+cd frontend
+docker-compose up -d
+
+# 4. Verify services are running
+docker-compose ps
+```
+
+**Service URLs after restart:**
+- Frontend: http://localhost:9210
+- Backend API: http://localhost:9211
+- Adminer: http://localhost:8081
+
+**Automatic workflow reminders:**
+- Always commit changes before restarting containers
+- Use descriptive commit messages (feat:, fix:, docs:, etc.)
+- Check container health status after restart
+- Frontend changes require container rebuild and restart
+
 ## Architecture
 
 ### Backend Structure
