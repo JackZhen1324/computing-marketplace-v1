@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Tag, Button, Space, Modal, Form, Select, Input, message, Card, Statistic, Row, Col } from 'antd';
+import { Tag, Button, Space, Modal, Form, Select, Input, message, Card, Statistic, Row, Col } from 'antd';
 import {
   EyeOutlined,
   EditOutlined,
@@ -10,7 +10,9 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons';
 import { inquiriesService } from '../../services/api/inquiries';
-import type { Inquiry } from '../../types/inquiry';
+import type { Inquiry } from '../../services/types/api';
+import { ConfigurableTable } from '../../components/ConfigurableTable';
+import type { ColumnDef } from '../../types/table';
 import styles from './InquiryAdmin.module.css';
 
 const { TextArea } = Input;
@@ -92,7 +94,7 @@ const InquiryAdmin = () => {
     }
   };
 
-  const columns = [
+  const columnDefinitions: ColumnDef[] = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -171,7 +173,7 @@ const InquiryAdmin = () => {
       title: '操作',
       key: 'actions',
       width: 150,
-      fixed: 'right' as const,
+      fixed: true,
       render: (_: any, record: Inquiry) => (
         <Space>
           <Button
@@ -248,8 +250,9 @@ const InquiryAdmin = () => {
           </Button>
         }
       >
-        <Table
-          columns={columns}
+        <ConfigurableTable
+          tableKey="inquiry-admin"
+          columns={columnDefinitions}
           dataSource={inquiries}
           rowKey="id"
           loading={loading}
