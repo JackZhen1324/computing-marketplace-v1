@@ -23,6 +23,7 @@ const MaaS = () => {
     industry: '行业大模型',
     tools: '开发工具',
     academic: '学术研究大模型',
+    maas: 'MaaS平台',
   };
 
   const categoryDescriptions: Record<ModelInfo['category'], string> = {
@@ -31,6 +32,7 @@ const MaaS = () => {
     industry: '深入行业场景，助力数字化转型',
     tools: '完整的AI开发工具链，加速模型开发部署',
     academic: '支持前沿科研探索，推动学术创新',
+    maas: '提供大模型API服务，按tokens计费',
   };
 
   const features = [

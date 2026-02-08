@@ -2,18 +2,7 @@ import { useState } from 'react';
 import { Card, Tag } from 'antd';
 import { RocketOutlined, ThunderboltOutlined, StarOutlined } from '@ant-design/icons';
 import InquiryDialog from './InquiryDialog';
-
-interface ModelInfo {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-  parameters: string;
-  architecture?: string;
-  performance?: string;
-  tags: string[];
-  category: 'general' | 'vertical' | 'industry' | 'tools' | 'academic';
-}
+import type { ModelInfo } from '../../data/models';
 
 interface ModelCardProps {
   model: ModelInfo;
