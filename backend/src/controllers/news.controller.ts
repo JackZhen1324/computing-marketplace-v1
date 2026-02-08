@@ -11,7 +11,7 @@ export class NewsController {
       const where: any = {};
 
       if (type) {
-        where.type = type.toUpperCase();
+        where.type = (type as string).toUpperCase();
       }
 
       if (isPublished !== undefined) {
@@ -37,7 +37,7 @@ export class NewsController {
       const { id } = req.params;
 
       const news = await prisma.newsArticle.findUnique({
-        where: { id },
+        where: { id: id as string },
       });
 
       if (!news) {
@@ -109,13 +109,13 @@ export class NewsController {
         displayOrder,
       } = req.body;
 
-      const existing = await prisma.newsArticle.findUnique({ where: { id } });
+      const existing = await prisma.newsArticle.findUnique({ where: { id: id as string } });
       if (!existing) {
         throw new AppError('News article not found', 404);
       }
 
       const news = await prisma.newsArticle.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           type: type?.toUpperCase(),
           title,
@@ -144,7 +144,7 @@ export class NewsController {
     try {
       const { id } = req.params;
 
-      const news = await prisma.newsArticle.delete({ where: { id } });
+      const news = await prisma.newsArticle.delete({ where: { id: id as string } });
 
       res.json({
         success: true,
@@ -160,13 +160,13 @@ export class NewsController {
     try {
       const { id } = req.params;
 
-      const news = await prisma.newsArticle.findUnique({ where: { id } });
+      const news = await prisma.newsArticle.findUnique({ where: { id: id as string } });
       if (!news) {
         throw new AppError('News article not found', 404);
       }
 
       const updated = await prisma.newsArticle.update({
-        where: { id },
+        where: { id: id as string },
         data: { isPublished: !news.isPublished },
       });
 

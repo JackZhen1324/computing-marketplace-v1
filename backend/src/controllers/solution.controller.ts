@@ -28,7 +28,7 @@ export class SolutionController {
       const { id } = req.params;
 
       const solution = await prisma.solution.findUnique({
-        where: { id },
+        where: { id: id as string },
         include: {
           benefits: { orderBy: { displayOrder: 'asc' } },
         },
@@ -108,15 +108,15 @@ export class SolutionController {
         benefits,
       } = req.body;
 
-      const existing = await prisma.solution.findUnique({ where: { id } });
+      const existing = await prisma.solution.findUnique({ where: { id: id as string } });
       if (!existing) {
         throw new AppError('Solution not found', 404);
       }
 
-      await prisma.solutionBenefit.deleteMany({ where: { solutionId: id } });
+      await prisma.solutionBenefit.deleteMany({ where: { solutionId: id as string } });
 
       const solution = await prisma.solution.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           title,
           subtitle,
@@ -152,7 +152,7 @@ export class SolutionController {
     try {
       const { id } = req.params;
 
-      const solution = await prisma.solution.delete({ where: { id } });
+      const solution = await prisma.solution.delete({ where: { id: id as string } });
 
       res.json({
         success: true,

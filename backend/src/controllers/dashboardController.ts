@@ -387,7 +387,7 @@ export const updateTaskStatus = async (req: Request, res: Response) => {
     const { status } = req.body;
 
     const updated = await prisma.inquiry.update({
-      where: { id },
+      where: { id: id as string },
       data: { status },
     });
 

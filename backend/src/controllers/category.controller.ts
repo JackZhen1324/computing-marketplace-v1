@@ -34,7 +34,7 @@ export class CategoryController {
     try {
       const { id } = req.params;
       const category = await prisma.category.findUnique({
-        where: { id },
+        where: { id: id as string },
         include: {
           products: true,
         },
@@ -75,7 +75,7 @@ export class CategoryController {
 
       // Check if category ID already exists
       const existing = await prisma.category.findUnique({
-        where: { id },
+        where: { id: id as string },
       });
 
       if (existing) {
@@ -125,7 +125,7 @@ export class CategoryController {
       } = req.body;
 
       const category = await prisma.category.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           ...(name !== undefined && { name }),
           ...(nameEn !== undefined && { nameEn }),
@@ -157,7 +157,7 @@ export class CategoryController {
 
       // Check if category has products
       const productCount = await prisma.product.count({
-        where: { categoryId: id },
+        where: { categoryId: id as string },
       });
 
       if (productCount > 0) {
@@ -168,7 +168,7 @@ export class CategoryController {
       }
 
       await prisma.category.delete({
-        where: { id },
+        where: { id: id as string },
       });
 
       res.json({
@@ -190,7 +190,7 @@ export class CategoryController {
       const { id } = req.params;
 
       const category = await prisma.category.findUnique({
-        where: { id },
+        where: { id: id as string },
       });
 
       if (!category) {
@@ -201,7 +201,7 @@ export class CategoryController {
       }
 
       const updated = await prisma.category.update({
-        where: { id },
+        where: { id: id as string },
         data: { isActive: !category.isActive },
       });
 

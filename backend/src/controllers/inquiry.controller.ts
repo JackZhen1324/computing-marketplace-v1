@@ -58,7 +58,7 @@ export class InquiryController {
       const { id } = req.params;
 
       const inquiry = await prisma.inquiry.findUnique({
-        where: { id },
+        where: { id: id as string },
         include: {
           product: true,
           createdBy: { select: { id: true, fullName: true, email: true } },
@@ -165,13 +165,13 @@ export class InquiryController {
       const { id } = req.params;
       const { status, priority, notes, assigneeId } = req.body;
 
-      const existing = await prisma.inquiry.findUnique({ where: { id } });
+      const existing = await prisma.inquiry.findUnique({ where: { id: id as string } });
       if (!existing) {
         throw new AppError('Inquiry not found', 404);
       }
 
       const inquiry = await prisma.inquiry.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           status,
           priority,
@@ -211,7 +211,7 @@ export class InquiryController {
       const { status } = req.body;
 
       const inquiry = await prisma.inquiry.update({
-        where: { id },
+        where: { id: id as string },
         data: { status },
       });
 
@@ -237,7 +237,7 @@ export class InquiryController {
       }
 
       const inquiry = await prisma.inquiry.update({
-        where: { id },
+        where: { id: id as string },
         data: { assigneeId },
         include: {
           assignedTo: { select: { id: true, fullName: true, email: true } },
@@ -259,13 +259,13 @@ export class InquiryController {
       const { id } = req.params;
       const { content } = req.body;
 
-      const inquiry = await prisma.inquiry.findUnique({ where: { id } });
+      const inquiry = await prisma.inquiry.findUnique({ where: { id: id as string } });
       if (!inquiry) {
         throw new AppError('Inquiry not found', 404);
       }
 
       const updated = await prisma.inquiry.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           notes: inquiry.notes ? `${inquiry.notes}\n\n${content}` : content,
         },

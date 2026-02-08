@@ -57,7 +57,7 @@ export class ProductController {
       const { id } = req.params;
 
       const product = await prisma.product.findUnique({
-        where: { id },
+        where: { id: id as string },
         include: {
           features: { orderBy: { displayOrder: 'asc' } },
           specifications: { orderBy: { displayOrder: 'asc' } },
@@ -191,20 +191,20 @@ export class ProductController {
       } = req.body;
 
       // Check if product exists
-      const existing = await prisma.product.findUnique({ where: { id } });
+      const existing = await prisma.product.findUnique({ where: { id: id as string } });
       if (!existing) {
         throw new AppError('Product not found', 404);
       }
 
       // Delete existing related records
-      await prisma.productFeature.deleteMany({ where: { productId: id } });
-      await prisma.productSpecification.deleteMany({ where: { productId: id } });
-      await prisma.productPricing.deleteMany({ where: { productId: id } });
-      await prisma.productUseCase.deleteMany({ where: { productId: id } });
+      await prisma.productFeature.deleteMany({ where: { productId: id as string } });
+      await prisma.productSpecification.deleteMany({ where: { productId: id as string } });
+      await prisma.productPricing.deleteMany({ where: { productId: id as string } });
+      await prisma.productUseCase.deleteMany({ where: { productId: id as string } });
 
       // Update product with new data
       const product = await prisma.product.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           categoryId,
           name,
@@ -272,7 +272,7 @@ export class ProductController {
       const { id } = req.params;
 
       const product = await prisma.product.delete({
-        where: { id },
+        where: { id: id as string },
       });
 
       res.json({
@@ -289,13 +289,13 @@ export class ProductController {
     try {
       const { id } = req.params;
 
-      const product = await prisma.product.findUnique({ where: { id } });
+      const product = await prisma.product.findUnique({ where: { id: id as string } });
       if (!product) {
         throw new AppError('Product not found', 404);
       }
 
       const updated = await prisma.product.update({
-        where: { id },
+        where: { id: id as string },
         data: { isActive: !product.isActive },
       });
 

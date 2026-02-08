@@ -78,13 +78,13 @@ export class NavigationController {
       const { label, path, parentId, icon, displayOrder, isVisible, requiresAuth, allowedRoles } =
         req.body;
 
-      const existing = await prisma.navigationItem.findUnique({ where: { id } });
+      const existing = await prisma.navigationItem.findUnique({ where: { id: id as string } });
       if (!existing) {
         throw new AppError('Navigation item not found', 404);
       }
 
       const item = await prisma.navigationItem.update({
-        where: { id },
+        where: { id: id as string },
         data: {
           label,
           path,
@@ -111,7 +111,7 @@ export class NavigationController {
     try {
       const { id } = req.params;
 
-      const item = await prisma.navigationItem.delete({ where: { id } });
+      const item = await prisma.navigationItem.delete({ where: { id: id as string } });
 
       res.json({
         success: true,
