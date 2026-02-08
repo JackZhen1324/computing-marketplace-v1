@@ -495,7 +495,7 @@ export const getCategoryFromProductId = (productId: string): string => {
   if (productId.startsWith('gpu-bare-metal')) return 'gpu-bare-metal';
   if (productId.startsWith('gpu-cloud')) return 'gpu-cloud';
   if (productId.startsWith('appliance') || productId.startsWith('a100')) return 'appliance';
-  if (productId.startsWith('maas')) return 'maas';
+  if (productId.startsWith('maas') || productId.startsWith('model-')) return 'maas'; // MaaS平台模型ID以'model-'开头
   if (productId.startsWith('general')) return 'general';
   if (productId.includes('storage') || productId.includes('nas') || productId.includes('oss')) return 'storage';
   if (productId.includes('nat') || productId.includes('lb') || productId.includes('eip')) return 'network';
