@@ -23,6 +23,7 @@ import ServicePlatform from './pages/Solutions/ServicePlatform'
 import NetworkSystem from './pages/Solutions/NetworkSystem'
 import FusionBase from './pages/Solutions/FusionBase'
 import Login from './pages/Login'
+import Dashboard from './pages/Admin/Dashboard'
 import InquiryAdmin from './pages/Admin/InquiryAdmin'
 import CategoryAdmin from './pages/Admin/CategoryAdmin'
 import ProductAdmin from './pages/Admin/ProductAdmin'
@@ -50,7 +51,8 @@ function App() {
 
             {/* Admin routes with AdminLayout */}
             <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Navigate to="/admin/inquiries" replace />} />
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="inquiries" element={<InquiryAdmin />} />
               <Route path="categories" element={<CategoryAdmin />} />
               <Route path="products" element={<ProductAdmin />} />

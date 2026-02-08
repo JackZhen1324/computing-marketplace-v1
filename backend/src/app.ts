@@ -13,6 +13,7 @@ import newsRoutes from './routes/news';
 import navigationRoutes from './routes/navigation';
 import inquiryRoutes from './routes/inquiries';
 import uploadRoutes from './routes/upload';
+import dashboardRoutes from './routes/dashboard';
 import logger from './utils/logger';
 
 const createApp = (): Application => {
@@ -118,6 +119,7 @@ const createApp = (): Application => {
   app.use('/api/navigation', navigationRoutes);
   app.use('/api/inquiries', inquiryRoutes);
   app.use('/api/upload', uploadRoutes);
+  app.use('/api/dashboard', dashboardRoutes);
 
   // 404 handler
   app.use(notFoundHandler);
