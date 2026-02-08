@@ -149,8 +149,6 @@ const Header = () => {
     return 'home';
   };
 
-  const activeKey = getActiveKey();
-
   // Helper function to check if a nav item is active
   const isNavItemActive = (item: NavigationItem) => {
     if (!item.path) return false;

@@ -4,6 +4,7 @@ import {
   ShoppingCartOutlined,
   FileTextOutlined,
   CheckCircleOutlined,
+  UserOutlined,
   ArrowUpOutlined,
 } from '@ant-design/icons';
 import { useInquiries } from '../../services/hooks/useInquiries';
@@ -13,8 +14,8 @@ import styles from './Dashboard.module.css';
 const { Title } = Typography;
 
 const Dashboard = () => {
-  const { data: inquiries } = useInquiries();
-  const { data: products } = useProducts();
+  const { inquiries } = useInquiries();
+  const { products } = useProducts();
 
   // Calculate statistics
   const totalInquiries = inquiries?.length || 0;
