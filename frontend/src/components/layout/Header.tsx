@@ -123,8 +123,8 @@ const Header = () => {
     const path = location.pathname;
 
     // Check intelligent computing sub-pages
-    if (path.startsWith('/intelligent/')) {
-      return 'intelligent';
+    if (path.startsWith('/intelligent-computing/')) {
+      return 'intelligent-computing';
     }
 
     // Check solutions sub-pages

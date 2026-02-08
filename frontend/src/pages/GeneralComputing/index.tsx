@@ -2,12 +2,15 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Row, Col, Card, Typography, Button, Pagination, Spin, Alert } from 'antd';
 import { useProducts } from '../../services/hooks/useProducts';
+import InquiryDialog from '../../components/common/InquiryDialog';
 import styles from './GeneralComputing.module.css';
 
 const { Title, Text } = Typography;
 
 const GeneralComputing = () => {
   const { products, loading, error } = useProducts({ category: 'general' });
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   // Category filter state
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -50,6 +53,16 @@ const GeneralComputing = () => {
   }, [filteredProducts, currentPage]);
 
   const totalProducts = filteredProducts.length;
+
+  const handleInquiryClick = (product: any) => {
+    setSelectedProduct(product);
+    setDialogVisible(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogVisible(false);
+    setSelectedProduct(null);
+  };
 
   // Loading state
   if (loading) {
@@ -195,6 +208,7 @@ const GeneralComputing = () => {
                   <Button
                     type="primary"
                     className={styles.ctaButton}
+                    onClick={() => handleInquiryClick(product)}
                   >
                     立即咨询
                   </Button>
@@ -235,6 +249,13 @@ const GeneralComputing = () => {
           </div>
         </div>
       </section>
+
+      {/* Inquiry Dialog */}
+      <InquiryDialog
+        visible={dialogVisible}
+        onClose={handleDialogClose}
+        product={selectedProduct || { id: '', name: '', category: '' }}
+      />
     </div>
   );
 };

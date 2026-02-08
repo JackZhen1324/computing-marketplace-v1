@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Card, Tag } from 'antd';
 import { RocketOutlined, ThunderboltOutlined, StarOutlined } from '@ant-design/icons';
+import InquiryDialog from './InquiryDialog';
 
 interface ModelInfo {
   id: string;
@@ -18,6 +20,7 @@ interface ModelCardProps {
 }
 
 const ModelCard = ({ model }: ModelCardProps) => {
+  const [dialogVisible, setDialogVisible] = useState(false);
   return (
     <Card
       hoverable
@@ -155,6 +158,7 @@ const ModelCard = ({ model }: ModelCardProps) => {
 
       {/* CTA Button */}
       <button
+        onClick={() => setDialogVisible(true)}
         style={{
           width: '100%',
           padding: '12px 24px',
@@ -178,6 +182,17 @@ const ModelCard = ({ model }: ModelCardProps) => {
       >
         立即咨询
       </button>
+
+      {/* Inquiry Dialog */}
+      <InquiryDialog
+        visible={dialogVisible}
+        onClose={() => setDialogVisible(false)}
+        product={{
+          id: model.id,
+          name: model.name,
+          category: model.category,
+        }}
+      />
     </Card>
   );
 };
