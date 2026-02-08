@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm, Image } from 'antd';
+import { Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm, Image } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { categoriesService, Category } from '../../services/api/categories';
+import { ConfigurableTable } from '../../components/ConfigurableTable';
+import type { ColumnDef } from '../../types/table';
 
 const CategoryAdmin = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -89,7 +91,7 @@ const CategoryAdmin = () => {
     }
   };
 
-  const columns = [
+  const columnDefinitions: ColumnDef[] = [
     {
       title: '排序',
       dataIndex: 'displayOrder',
@@ -155,7 +157,7 @@ const CategoryAdmin = () => {
       title: '操作',
       key: 'actions',
       width: 150,
-      fixed: 'right' as const,
+      fixed: true,
       render: (_: any, record: Category) => (
         <Space size="small">
           <Button
@@ -199,8 +201,9 @@ const CategoryAdmin = () => {
           </Button>
         }
       >
-        <Table
-          columns={columns}
+        <ConfigurableTable
+          tableKey="category-admin"
+          columns={columnDefinitions}
           dataSource={categories}
           rowKey="id"
           loading={loading}

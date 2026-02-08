@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Select, Switch, Space, message, Card, Popconfirm } from 'antd';
+import { Button, Modal, Form, Input, Select, Switch, Space, message, Card, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { newsService, NewsArticle, CreateNewsRequest, UpdateNewsRequest } from '../../services/api/news';
+import { ConfigurableTable } from '../../components/ConfigurableTable';
+import type { ColumnDef } from '../../types/table';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -77,7 +79,7 @@ const NewsAdmin = () => {
     }
   };
 
-  const columns = [
+  const columnDefinitions: ColumnDef[] = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 200 },
     { title: '类型', dataIndex: 'type', key: 'type', width: 100 },
     { title: '标题', dataIndex: 'title', key: 'title', ellipsis: true },
@@ -94,7 +96,7 @@ const NewsAdmin = () => {
       title: '操作',
       key: 'actions',
       width: 150,
-      fixed: 'right' as const,
+      fixed: true,
       render: (_: any, record: NewsArticle) => (
         <Space>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
@@ -125,8 +127,9 @@ const NewsAdmin = () => {
           </Button>
         }
       >
-        <Table
-          columns={columns}
+        <ConfigurableTable
+          tableKey="news-admin"
+          columns={columnDefinitions}
           dataSource={news}
           rowKey="id"
           loading={loading}

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import {
-  Table,
   Button,
   Modal,
   Form,
@@ -18,6 +17,8 @@ import {
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { productsService, CreateProductRequest, UpdateProductRequest } from '../../services/api/products';
 import { categoriesService, Category } from '../../services/api/categories';
+import { ConfigurableTable } from '../../components/ConfigurableTable';
+import type { ColumnDef } from '../../types/table';
 import ImageUpload from '../../components/ImageUpload';
 
 const { TextArea } = Input;
@@ -137,7 +138,7 @@ const ProductAdmin = () => {
     }
   };
 
-  const columns = [
+  const columnDefinitions: ColumnDef[] = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -206,7 +207,7 @@ const ProductAdmin = () => {
       title: '操作',
       key: 'actions',
       width: 150,
-      fixed: 'right' as const,
+      fixed: true,
       render: (_: any, record: Product) => (
         <Space size="small">
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
@@ -238,8 +239,9 @@ const ProductAdmin = () => {
           </Button>
         }
       >
-        <Table
-          columns={columns}
+        <ConfigurableTable
+          tableKey="product-admin"
+          columns={columnDefinitions}
           dataSource={products}
           rowKey="id"
           loading={loading}

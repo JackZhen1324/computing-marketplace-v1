@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm } from 'antd';
+import { Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { solutionsService, SolutionWithBenefits, CreateSolutionRequest, UpdateSolutionRequest } from '../../services/api/solutions';
+import { ConfigurableTable } from '../../components/ConfigurableTable';
+import type { ColumnDef } from '../../types/table';
 
 const { TextArea } = Input;
 
@@ -84,7 +86,7 @@ const SolutionAdmin = () => {
     }
   };
 
-  const columns = [
+  const columnDefinitions: ColumnDef[] = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 200 },
     { title: '标题', dataIndex: 'title', key: 'title', width: 200 },
     {
@@ -105,7 +107,7 @@ const SolutionAdmin = () => {
       title: '操作',
       key: 'actions',
       width: 150,
-      fixed: 'right' as const,
+      fixed: true,
       render: (_: any, record: SolutionWithBenefits) => (
         <Space>
           <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
@@ -136,8 +138,9 @@ const SolutionAdmin = () => {
           </Button>
         }
       >
-        <Table
-          columns={columns}
+        <ConfigurableTable
+          tableKey="solution-admin"
+          columns={columnDefinitions}
           dataSource={solutions}
           rowKey="id"
           loading={loading}
