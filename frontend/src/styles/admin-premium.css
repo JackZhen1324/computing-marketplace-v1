@@ -1,0 +1,256 @@
+/* Premium Admin Shared Styles */
+
+/* All Admin Pages */
+.page {
+  min-height: 100vh;
+  background: transparent;
+  padding: 0;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 4px 0;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.refreshButton,
+.editButton {
+  border-radius: 11px;
+  height: 42px;
+  padding: 0 22px;
+  font-weight: 600;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #64748b;
+}
+
+.refreshButton:hover,
+.editButton:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: #6366f1;
+  border-color: rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.15);
+}
+
+.addButton {
+  height: 42px;
+  padding: 0 22px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+}
+
+/* Statistics Cards */
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px 26px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--card-color-1, #6366f1), var(--card-color-2, #8b5cf6));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.statCard:hover::before {
+  opacity: 1;
+}
+
+.statIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statTitle {
+  font-size: 13px;
+  color: #64748b;
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.statValue {
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+
+/* Table Card */
+.tableCard {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Action Buttons */
+.actionButton {
+  color: #6366f1;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.25s ease;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.actionButton:hover {
+  color: #7c3aed;
+  background: rgba(99, 102, 241, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Detail Modal */
+.detailContent {
+  padding: 12px 0;
+}
+
+.detailRow {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  font-size: 13px;
+  color: #64748b;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.detailValue {
+  flex: 1;
+  color: #1e293b;
+  font-size: 14px;
+  word-break: break-word;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .page {
+    padding: 0;
+  }
+
+  .pageHeader {
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 0;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .refreshButton,
+  .editButton {
+    width: 100%;
+  }
+
+  .statCard {
+    padding: 20px;
+  }
+
+  .statIcon {
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+  }
+
+  .statValue {
+    font-size: 28px;
+  }
+
+  .tableCard {
+    padding: 20px;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .detailLabel {
+    min-width: auto;
+  }
+}
