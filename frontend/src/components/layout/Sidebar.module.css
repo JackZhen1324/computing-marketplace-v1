@@ -179,23 +179,29 @@
   white-space: nowrap;
 }
 
-.settingsBtn {
+.logoutBtn {
   flex-shrink: 0;
   background: transparent;
   border: none;
-  color: var(--color-sidebar-text-muted);
+  color: #ff4d4f;
   cursor: pointer;
   padding: var(--spacing-sm);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-sm);
   border-radius: var(--border-radius-sm);
   transition: all var(--transition-fast);
+  font-size: 14px;
 }
 
-.settingsBtn:hover {
-  background-color: var(--color-sidebar-hover);
-  color: var(--color-sidebar-text);
+.logoutBtn:hover {
+  background-color: rgba(255, 77, 79, 0.1);
+  color: #ff7875;
+}
+
+.logoutText {
+  white-space: nowrap;
 }
 
 /* Collapsed State */

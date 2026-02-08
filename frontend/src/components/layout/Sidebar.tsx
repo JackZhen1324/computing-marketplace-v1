@@ -11,7 +11,10 @@ import {
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
+import { authService } from '../../services/api/auth';
+import { clearAuthTokens } from '../../services/api/client';
 import styles from './Sidebar.module.css';
 
 interface MenuItem {
@@ -90,6 +93,19 @@ export const Sidebar = ({ collapsed = false, onCollapsedChange }: SidebarProps) 
     return currentPath === path || currentPath.startsWith(path + '/');
   };
 
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      clearAuthTokens();
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Even if API call fails, clear local tokens and redirect
+      clearAuthTokens();
+      navigate('/login');
+    }
+  };
+
   return (
     <div
       className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}
@@ -138,8 +154,14 @@ export const Sidebar = ({ collapsed = false, onCollapsedChange }: SidebarProps) 
           </div>
           {!isCollapsed && <span className={styles.userName}>管理员</span>}
         </button>
-        <button className={styles.settingsBtn} type="button">
-          <SettingOutlined />
+        <button
+          className={styles.logoutBtn}
+          onClick={handleLogout}
+          type="button"
+          title={isCollapsed ? '退出登录' : ''}
+        >
+          <LogoutOutlined />
+          {!isCollapsed && <span className={styles.logoutText}>退出登录</span>}
         </button>
       </div>
     </div>
