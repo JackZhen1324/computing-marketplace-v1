@@ -7,3 +7,121 @@
 .controlBar {
   margin-bottom: 24px;
 }
+
+/* Quick Links */
+.quickLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #f0f2f5;
+  border-radius: 8px;
+  color: #333;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+
+.quickLink:hover {
+  background: #e6f7ff;
+  color: #1890ff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Activity Items */
+.activityItem {
+  padding: 12px;
+  border-radius: 8px;
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s;
+}
+
+.activityItem:hover {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transform: translateX(4px);
+}
+
+.activityHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.activityName {
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.activityStatus {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.activityStatus.pending {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+.activityStatus.contacted {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.activityStatus.converted {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.activityStatus.closed {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.activityDetail {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.activityTime {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Info Items */
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.infoItem:last-child {
+  border-bottom: none;
+}
+
+.infoLabel {
+  color: #666;
+  font-size: 14px;
+}
+
+.infoValue {
+  color: #333;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 16px;
+  }
+}

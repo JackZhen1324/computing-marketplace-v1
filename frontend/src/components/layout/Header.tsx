@@ -154,8 +154,20 @@ const Header = () => {
   // Helper function to check if a nav item is active
   const isNavItemActive = (item: NavigationItem) => {
     if (!item.path) return false;
-    const itemKey = item.path === '/' ? 'home' : item.path.replace('/', '');
-    return activeKey === itemKey;
+    const path = location.pathname;
+
+    // Check if current path matches this item's path
+    if (path === item.path) return true;
+
+    // Check if current path is a sub-path of this item
+    if (item.path !== '/' && path.startsWith(item.path + '/')) return true;
+
+    // Check if any child matches current path
+    if (item.children) {
+      return item.children.some(child => child.path === path);
+    }
+
+    return false;
   };
 
   // Handle dropdown mouse events

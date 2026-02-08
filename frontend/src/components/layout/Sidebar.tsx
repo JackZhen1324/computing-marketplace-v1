@@ -85,7 +85,9 @@ export const Sidebar = ({ collapsed = false, onCollapsedChange }: SidebarProps) 
   };
 
   const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
+    // Exact match or starts with path followed by /
+    const currentPath = location.pathname;
+    return currentPath === path || currentPath.startsWith(path + '/');
   };
 
   return (

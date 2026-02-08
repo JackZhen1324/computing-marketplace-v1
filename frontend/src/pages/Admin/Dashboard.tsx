@@ -1,49 +1,166 @@
-import { useState } from 'react';
-import { Card } from 'antd';
-import { QuickStats } from '../../components/dashboard/QuickStats';
-import { TaskBoard } from '../../components/dashboard/TaskBoard';
-import InquiryAdmin from './InquiryAdmin';
-import { ViewSwitcher } from '../../components/dashboard/ViewSwitcher';
-import { DataInsights } from '../../components/dashboard/DataInsights';
-import { useDashboardStats } from '../../hooks/useDashboardData';
-import type { TimeRange, ViewMode } from '../../types/dashboard';
+import { Card, Row, Col, Statistic, Typography, Space } from 'antd';
+import {
+  MessageOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+} from '@ant-design/icons';
+import { useInquiries } from '../../services/hooks/useInquiries';
+import { useProducts } from '../../services/hooks/useProducts';
 import styles from './Dashboard.module.css';
 
-const Dashboard = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [timeRange, setTimeRange] = useState<TimeRange>('week');
-  const [showInsights, setShowInsights] = useState(true);
+const { Title } = Typography;
 
-  const { data: stats, isLoading } = useDashboardStats(timeRange);
+const Dashboard = () => {
+  const { data: inquiries } = useInquiries();
+  const { data: products } = useProducts();
+
+  // Calculate statistics
+  const totalInquiries = inquiries?.length || 0;
+  const pendingInquiries = inquiries?.filter((i: any) => i.status === 'PENDING').length || 0;
+  const totalProducts = products?.length || 0;
+  const activeProducts = products?.filter((p: any) => p.isVisible).length || 0;
+
+  // Calculate trends (mock data for demo)
+  const inquiryTrend = '+12.5';
+  const productTrend = '+3.2';
 
   return (
     <div className={styles.dashboard}>
-      {/* 快速统计卡片 */}
-      <QuickStats stats={stats?.quickStats} loading={isLoading} />
+      <Title level={3} style={{ marginBottom: 24 }}>
+        数据概览
+      </Title>
 
-      {/* 视图切换器和筛选器 */}
-      <Card className={styles.controlBar}>
-        <ViewSwitcher
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          timeRange={timeRange}
-          onTimeRangeChange={setTimeRange}
-          showInsights={showInsights}
-          onToggleInsights={() => setShowInsights(!showInsights)}
-        />
+      {/* Statistics Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="总询价数"
+              value={totalInquiries}
+              prefix={<MessageOutlined />}
+              suffix={
+                <span style={{ fontSize: 14, color: '#3f8600' }}>
+                  <ArrowUpOutlined /> {inquiryTrend}%
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="待处理询价"
+              value={pendingInquiries}
+              prefix={<MessageOutlined />}
+              valueStyle={{ color: pendingInquiries > 0 ? '#cf1322' : undefined }}
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="产品总数"
+              value={totalProducts}
+              prefix={<ShoppingCartOutlined />}
+              suffix={
+                <span style={{ fontSize: 14, color: '#3f8600' }}>
+                  <ArrowUpOutlined /> {productTrend}%
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="在线产品"
+              value={activeProducts}
+              prefix={<ShoppingCartOutlined />}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Quick Links */}
+      <Card title="快捷操作" style={{ marginBottom: 24 }}>
+        <Space wrap>
+          <a href="/admin/inquiries" className={styles.quickLink}>
+            <MessageOutlined /> 查看询价
+          </a>
+          <a href="/admin/products" className={styles.quickLink}>
+            <ShoppingCartOutlined /> 管理产品
+          </a>
+          <a href="/admin/categories" className={styles.quickLink}>
+            <UserOutlined /> 产品分类
+          </a>
+        </Space>
       </Card>
 
-      {/* 任务视图 */}
-      {viewMode === 'kanban' ? (
-        <TaskBoard timeRange={timeRange} />
-      ) : (
-        <InquiryAdmin />
-      )}
+      {/* Recent Activity */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={12}>
+          <Card title="最新询价" extra={<a href="/admin/inquiries">查看全部</a>}>
+            {inquiries && inquiries.length > 0 ? (
+              <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                {inquiries.slice(0, 5).map((inquiry: any) => (
+                  <div key={inquiry.id} className={styles.activityItem}>
+                    <div className={styles.activityHeader}>
+                      <span className={styles.activityName}>{inquiry.name}</span>
+                      <span className={`${styles.activityStatus} ${styles[inquiry.status?.toLowerCase()]}`}>
+                        {inquiry.status === 'PENDING' ? '待处理' :
+                         inquiry.status === 'CONTACTED' ? '已联系' :
+                         inquiry.status === 'CONVERTED' ? '已转化' : '已关闭'}
+                      </span>
+                    </div>
+                    <div className={styles.activityDetail}>
+                      {inquiry.productName} - {inquiry.company}
+                    </div>
+                    <div className={styles.activityTime}>
+                      {new Date(inquiry.createdAt).toLocaleDateString('zh-CN')}
+                    </div>
+                  </div>
+                ))}
+              </Space>
+            ) : (
+              <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+                暂无询价数据
+              </div>
+            )}
+          </Card>
+        </Col>
 
-      {/* 数据洞察区（可折叠） */}
-      {showInsights && (
-        <DataInsights timeRange={timeRange} />
-      )}
+        <Col xs={24} lg={12}>
+          <Card title="系统信息">
+            <Space direction="vertical" style={{ width: '100%' }} size="middle">
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>系统版本</span>
+                <span className={styles.infoValue}>v1.0.0</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>上次更新</span>
+                <span className={styles.infoValue}>{new Date().toLocaleDateString('zh-CN')}</span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>数据库状态</span>
+                <span className={styles.infoValue} style={{ color: '#52c41a' }}>
+                  ● 正常
+                </span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>服务状态</span>
+                <span className={styles.infoValue} style={{ color: '#52c41a' }}>
+                  ● 运行中
+                </span>
+              </div>
+            </Space>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

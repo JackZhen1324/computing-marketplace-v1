@@ -1,6 +1,7 @@
 .layout {
   display: flex;
   min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll on body */
 }
 
 .mainContent {
@@ -9,6 +10,8 @@
   flex-direction: column;
   min-height: 100vh;
   transition: margin-left var(--transition-slow);
+  overflow-x: hidden; /* Prevent horizontal scroll on main content */
+  width: 100%; /* Ensure width doesn't exceed viewport */
 }
 
 .content {
@@ -16,6 +19,8 @@
   padding: var(--spacing-xl);
   background-color: var(--color-bg-secondary);
   overflow-y: auto;
+  overflow-x: hidden; /* Hide horizontal overflow */
+  max-width: 100%; /* Prevent content from exceeding viewport */
 }
 
 .homeLink {
@@ -33,4 +38,25 @@
 .homeLink:hover {
   background-color: var(--color-bg-secondary);
   color: var(--color-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .content {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: var(--spacing-sm);
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .mainContent {
+    margin-left: 0 !important; /* Remove sidebar margin on mobile */
+  }
 }
