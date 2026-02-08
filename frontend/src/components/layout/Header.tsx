@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from 'antd';
 import { MenuOutlined, SettingOutlined } from '@ant-design/icons';
-import { navigationService, NavigationItem } from '../../services/api/navigation';
+import { navigationData as staticNavigationData, NavItem } from '../../data/navigation';
 import DropdownPanel from './DropdownPanel';
 import styles from './Header.module.css';
 
@@ -11,103 +11,14 @@ const Header = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [navigationData, setNavigationData] = useState<NavigationItem[]>([]);
   const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
 
-  useEffect(() => {
-    const fetchNavigation = async () => {
-      try {
-        const data = await navigationService.getNavigation();
-        setNavigationData(data);
-      } catch (error) {
-        console.error('Failed to load navigation:', error);
-        // Use default navigation if API fails
-        setNavigationData([
-          {
-            id: '1',
-            label: '首页',
-            path: '/',
-            parentId: null,
-            icon: null,
-            displayOrder: 0,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            label: '智算专区',
-            path: '/intelligent-computing',
-            parentId: null,
-            icon: null,
-            displayOrder: 1,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: '3',
-            label: '通算专区',
-            path: '/general-computing',
-            parentId: null,
-            icon: null,
-            displayOrder: 2,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: '4',
-            label: '解决方案',
-            path: '/solutions',
-            parentId: null,
-            icon: null,
-            displayOrder: 3,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: '5',
-            label: '新闻',
-            path: '/news',
-            parentId: null,
-            icon: null,
-            displayOrder: 4,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-          {
-            id: '6',
-            label: '关于我们',
-            path: '/about',
-            parentId: null,
-            icon: null,
-            displayOrder: 5,
-            isVisible: true,
-            requiresAuth: false,
-            allowedRoles: null,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        ]);
-      }
-    };
-
-    fetchNavigation();
-  }, []);
+  // Use static navigation data directly
+  const navigationData = staticNavigationData.map((item: any) => ({
+    ...item,
+    children: item.children || [],
+  }));
 
   useEffect(() => {
     const handleResize = () => {
@@ -119,7 +30,7 @@ const Header = () => {
   }, []);
 
   // Helper function to check if a nav item is active
-  const isNavItemActive = (item: NavigationItem) => {
+  const isNavItemActive = (item: NavItem) => {
     if (!item.path) return false;
     const path = location.pathname;
 
@@ -131,7 +42,7 @@ const Header = () => {
 
     // Check if any child matches current path
     if (item.children) {
-      return item.children.some(child => child.path === path);
+      return item.children.some((child: NavItem) => child.path === path);
     }
 
     return false;
@@ -240,7 +151,7 @@ const Header = () => {
                     {item.label}
                   </div>
                   <div className={styles.mobileSubMenu}>
-                    {item.children.filter(child => child.path).map((child) => (
+                    {item.children.filter((child: NavItem) => child.path).map((child: NavItem) => (
                       <Link
                         key={child.path}
                         to={child.path!}
