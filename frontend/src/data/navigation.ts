@@ -13,7 +13,7 @@ export const navigationData: NavItem[] = [
   },
   {
     label: '智算专区',
-    path: '/intelligent',
+    path: '/intelligent-computing',
     children: [
       {
         label: 'GPU裸金属',
@@ -39,7 +39,7 @@ export const navigationData: NavItem[] = [
   },
   {
     label: '通算专区',
-    path: '/general',
+    path: '/general-computing',
   },
   {
     label: '解决方案',
