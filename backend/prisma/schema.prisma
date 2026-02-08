@@ -196,6 +196,7 @@ model Inquiry {
   companyName      String?      @map("company_name")
   interestedProducts String[]   @map("interested_products")
   specification    String?
+  requirements     Json?        // Store product-specific form fields as JSON
   status           InquiryStatus @default(PENDING)
   priority         Priority     @default(MEDIUM)
   notes            String?

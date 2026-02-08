@@ -92,6 +92,7 @@ export class InquiryController {
         companyName,
         interestedProducts,
         specification,
+        requirements,
         priority,
       } = req.body;
 
@@ -107,6 +108,16 @@ export class InquiryController {
         }
       }
 
+      // Extract requirements and clean them for database storage
+      // Remove contact info from requirements as they're stored separately
+      const cleanedRequirements = requirements ? {
+        ...requirements,
+        companyName: undefined,
+        customerName: undefined,
+        contactPhone: undefined,
+        email: undefined,
+      } : {};
+
       const inquiry = await prisma.inquiry.create({
         data: {
           productId,
@@ -118,6 +129,7 @@ export class InquiryController {
           companyName,
           interestedProducts,
           specification,
+          requirements: Object.keys(cleanedRequirements).length > 0 ? cleanedRequirements : null,
           priority: priority || 'MEDIUM',
           status: 'PENDING',
         },

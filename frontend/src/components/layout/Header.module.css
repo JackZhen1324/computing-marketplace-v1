@@ -85,9 +85,9 @@
 }
 
 .navLink.adminLink {
-  color: var(--color-primary);
-  background: rgba(63, 88, 250, 0.08);
-  border: 1px solid rgba(63, 88, 250, 0.2);
+  /* color: var(--color-primary); */
+  /* background: rgba(63, 88, 250, 0.08); */
+  /* border: 1px solid rgba(63, 88, 250, 0.2); */
 }
 
 .navLink.adminLink:hover {
