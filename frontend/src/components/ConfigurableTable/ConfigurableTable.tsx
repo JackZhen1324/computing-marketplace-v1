@@ -5,7 +5,6 @@ import type { TableProps } from 'antd/es/table';
 import { useColumnConfig } from '../../hooks/useColumnConfig';
 import { ColumnConfigModal } from './ColumnConfigModal';
 import type { ColumnDef } from '../../types/table';
-import styles from './ConfigurableTable.module.css';
 
 interface ConfigurableTableProps extends TableProps<any> {
   tableKey: string;        // Required: unique table identifier
@@ -57,22 +56,19 @@ export const ConfigurableTable = ({
 
   return (
     <>
+      <div style={{ marginBottom: title ? '16px' : '0', display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          icon={<SettingOutlined />}
+          onClick={showConfigModal}
+          size="small"
+        >
+          列配置
+        </Button>
+      </div>
       <Table
         {...tableProps}
         columns={finalColumns}
-        title={title ? () => (
-          <div className={styles.tableHeaderWithConfig}>
-            <div>{typeof title === 'string' ? title : '表格'}</div>
-            <Button
-              icon={<SettingOutlined />}
-              onClick={showConfigModal}
-              size="small"
-              className={styles.configButton}
-            >
-              列配置
-            </Button>
-          </div>
-        ) : undefined}
+        title={title}
       />
       <ColumnConfigModal
         visible={isModalVisible}
