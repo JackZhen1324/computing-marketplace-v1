@@ -124,19 +124,18 @@ const HeroSection = () => {
                 <motion.div
                   key={product.id}
                   className={styles.productCard}
-                  initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    delay: 0.3 + index * 0.1,
-                    duration: 0.8,
-                    ease: [0.25, 0.1, 0.25, 1],
+                    delay: index * 0.08,
+                    duration: 0.5,
+                    ease: 'easeOut',
                   }}
                   whileHover={{
-                    y: -12,
-                    scale: 1.02,
-                    boxShadow: '0 20px 40px rgba(99, 102, 241, 0.3)',
+                    y: -6,
+                    boxShadow: '0 16px 32px rgba(99, 102, 241, 0.2)',
                     transition: {
-                      duration: 0.3,
+                      duration: 0.2,
                       ease: 'easeOut',
                     },
                   }}
