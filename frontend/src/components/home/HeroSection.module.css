@@ -174,18 +174,19 @@
 
 .productCard {
   background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: var(--shadow-card);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.1);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  transition: box-shadow 0.3s ease;
 }
 
 .productCard::before {
@@ -198,10 +199,12 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.3),
+    rgba(99, 102, 241, 0.1),
     transparent
   );
-  transition: left 0.5s;
+  transition: left 0.6s ease;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .productCard:hover::before {
@@ -209,8 +212,8 @@
 }
 
 .productCard:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .productCard a {
@@ -219,6 +222,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .cardHeader {

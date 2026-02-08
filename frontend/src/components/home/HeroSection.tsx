@@ -124,17 +124,21 @@ const HeroSection = () => {
                 <motion.div
                   key={product.id}
                   className={styles.productCard}
-                  initial={{ opacity: 0, y: 30, rotate: -2 }}
-                  animate={{ opacity: 1, y: 0, rotate: 0 }}
+                  initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{
                     delay: 0.3 + index * 0.1,
-                    duration: 0.6,
-                    ease: 'easeOut',
+                    duration: 0.8,
+                    ease: [0.25, 0.1, 0.25, 1],
                   }}
                   whileHover={{
-                    y: -8,
-                    rotate: 0,
-                    transition: { duration: 0.2 },
+                    y: -12,
+                    scale: 1.02,
+                    boxShadow: '0 20px 40px rgba(99, 102, 241, 0.3)',
+                    transition: {
+                      duration: 0.3,
+                      ease: 'easeOut',
+                    },
                   }}
                 >
                   <Link to={`/intelligent-computing/gpu-bare-metal#${product.id}`}>
