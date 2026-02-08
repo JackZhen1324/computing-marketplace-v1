@@ -1,0 +1,169 @@
+/* Modern Minimal Admin Styles */
+
+.page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding: 28px;
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.refreshButton {
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.refreshButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.2);
+}
+
+.addButton {
+  border-radius: 8px;
+  height: 40px;
+  padding: 0 24px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+  transition: all 0.3s;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.4);
+}
+
+/* Statistics Cards */
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statTitle {
+  font-size: 13px;
+  color: #8c8c8c;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+/* Table Card */
+.tableCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Action Buttons */
+.actionButton {
+  color: #1890ff;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  color: #40a9ff;
+  background: rgba(24, 144, 255, 0.06);
+  border-radius: 4px;
+}
+
+/* Icon Image */
+.iconImage {
+  border-radius: 4px;
+  border: 1px solid #d9d9d9;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .page {
+    padding: 20px;
+  }
+
+  .pageHeader {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 16px;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .refreshButton,
+  .addButton {
+    width: 100%;
+  }
+
+  .statCard {
+    padding: 16px;
+  }
+
+  .statIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+
+  .tableCard {
+    padding: 16px;
+  }
+}

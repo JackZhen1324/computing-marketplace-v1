@@ -1,11 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Input, Switch, Space, message, Card, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Modal, Form, Input, Switch, Space, message, Row, Col, Typography, Tag, Tooltip } from 'antd';
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  ReloadOutlined,
+  CheckCircleOutlined,
+  StopOutlined,
+  BulbOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
 import { solutionsService, SolutionWithBenefits, CreateSolutionRequest, UpdateSolutionRequest } from '../../services/api/solutions';
 import { ConfigurableTable } from '../../components/ConfigurableTable';
 import type { ColumnDef } from '../../types/table';
+import styles from './SolutionAdmin.module.css';
 
 const { TextArea } = Input;
+const { Title, Text } = Typography;
 
 const SolutionAdmin = () => {
   const [solutions, setSolutions] = useState<SolutionWithBenefits[]>([]);
@@ -29,6 +40,32 @@ const SolutionAdmin = () => {
       setLoading(false);
     }
   };
+
+  const stats = {
+    total: solutions.length,
+    active: solutions.filter(s => s.isActive).length,
+    inactive: solutions.filter(s => !s.isActive).length,
+  };
+
+  const StatCard = ({ title, value, icon, color, bgColor }: {
+    title: string;
+    value: number;
+    icon: React.ReactNode;
+    color: string;
+    bgColor: string;
+  }) => (
+    <div className={styles.statCard} style={{ background: bgColor, borderColor: color }}>
+      <div className={styles.statIcon} style={{ color, background: bgColor }}>
+        {icon}
+      </div>
+      <div className={styles.statContent}>
+        <Text className={styles.statTitle}>{title}</Text>
+        <Title level={3} className={styles.statValue} style={{ color, margin: 0 }}>
+          {value}
+        </Title>
+      </div>
+    </div>
+  );
 
   const handleAdd = () => {
     setEditingSolution(null);
@@ -87,109 +124,268 @@ const SolutionAdmin = () => {
   };
 
   const columnDefinitions: ColumnDef[] = [
-    { title: 'ID', dataIndex: 'id', key: 'id', width: 200 },
-    { title: '标题', dataIndex: 'title', key: 'title', width: 200 },
+    {
+      title: '解决方案',
+      key: 'solution',
+      width: 300,
+      render: (_: any, record: SolutionWithBenefits) => (
+        <div>
+          <div style={{ fontWeight: 500, marginBottom: '4px', fontSize: '14px' }}>
+            <FileTextOutlined style={{ fontSize: '13px', marginRight: '6px', color: '#1890ff' }} />
+            {record.title}
+          </div>
+          {record.subtitle && (
+            <div style={{ fontSize: '12px', color: '#8c8c8c', marginLeft: '20px' }}>
+              {record.subtitle}
+            </div>
+          )}
+        </div>
+      ),
+    },
     {
       title: '亮点',
       dataIndex: 'highlights',
       key: 'highlights',
       width: 300,
-      render: (highlights: string[]) => highlights?.join(', ') || '-',
+      ellipsis: true,
+      render: (highlights: string[]) => (
+        <Space size={4} wrap>
+          {highlights?.slice(0, 2).map((highlight, index) => (
+            <Tag
+              key={index}
+              icon={<BulbOutlined />}
+              color="blue"
+              style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '6px', marginBottom: '4px' }}
+            >
+              {highlight}
+            </Tag>
+          ))}
+          {highlights?.length > 2 && (
+            <Tag style={{ fontSize: '12px', padding: '2px 8px', borderRadius: '6px' }}>
+              +{highlights.length - 2}
+            </Tag>
+          )}
+        </Space>
+      ),
     },
     {
       title: '状态',
       dataIndex: 'isActive',
       key: 'isActive',
-      width: 80,
-      render: (active: boolean) => (active ? '启用' : '禁用'),
+      width: 100,
+      render: (active: boolean) => (
+        <Tag
+          icon={active ? <CheckCircleOutlined /> : <StopOutlined />}
+          color={active ? 'success' : 'default'}
+          style={{
+            fontSize: '12px',
+            padding: '4px 12px',
+            borderRadius: '12px',
+            fontWeight: 500,
+            background: active ? '#f6ffed' : '#f5f5f5',
+            border: 'none',
+          }}
+        >
+          {active ? '已启用' : '已禁用'}
+        </Tag>
+      ),
+    },
+    {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description',
+      width: 250,
+      ellipsis: true,
+      render: (description: string) => (
+        <Text style={{ fontSize: '13px', color: '#595959' }} ellipsis={{ tooltip: description }}>
+          {description || '-'}
+        </Text>
+      ),
     },
     {
       title: '操作',
       key: 'actions',
-      width: 150,
-      fixed: true,
+      width: 140,
+      fixed: 'right',
       render: (_: any, record: SolutionWithBenefits) => (
-        <Space>
-          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-            编辑
-          </Button>
-          <Popconfirm
-            title="确认删除"
-            onConfirm={() => handleDelete(record.id)}
-            okText="删除"
-            cancelText="取消"
-          >
-            <Button type="link" size="small" danger icon={<DeleteOutlined />}>
+        <Space size="small">
+          <Tooltip title="编辑">
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+              className={styles.actionButton}
+            >
+              编辑
+            </Button>
+          </Tooltip>
+          <Tooltip title="删除">
+            <Button
+              type="text"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record.id)}
+              className={styles.actionButton}
+            >
               删除
             </Button>
-          </Popconfirm>
+          </Tooltip>
         </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card
-        title="解决方案管理"
-        extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+    <div className={styles.page}>
+      {/* Page Header */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <Title level={4} style={{ margin: 0 }}>
+            解决方案管理
+          </Title>
+          <Text type="secondary">管理所有企业解决方案和配置信息</Text>
+        </div>
+        <Space>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchSolutions}
+            loading={loading}
+            className={styles.refreshButton}
+          >
+            刷新
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            className={styles.addButton}
+          >
             新建解决方案
           </Button>
-        }
-      >
+        </Space>
+      </div>
+
+      {/* Statistics Cards */}
+      <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
+        <Col xs={24} sm={12} lg={8}>
+          <StatCard
+            title="总解决方案"
+            value={stats.total}
+            icon={<FileTextOutlined />}
+            color="#1890ff"
+            bgColor="#e6f7ff"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={8}>
+          <StatCard
+            title="已启用"
+            value={stats.active}
+            icon={<CheckCircleOutlined />}
+            color="#52c41a"
+            bgColor="#f6ffed"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={8}>
+          <StatCard
+            title="已禁用"
+            value={stats.inactive}
+            icon={<StopOutlined />}
+            color="#8c8c8c"
+            bgColor="#f5f5f5"
+          />
+        </Col>
+      </Row>
+
+      {/* Table */}
+      <div className={styles.tableCard}>
         <ConfigurableTable
           tableKey="solution-admin"
           columns={columnDefinitions}
           dataSource={solutions}
           rowKey="id"
           loading={loading}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 1200 }}
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
         />
-      </Card>
+      </div>
 
+      {/* Modal */}
       <Modal
-        title={editingSolution ? '编辑解决方案' : '新建解决方案'}
+        title={
+          <Space>
+            {editingSolution ? <EditOutlined style={{ color: '#1890ff' }} /> : <PlusOutlined style={{ color: '#1890ff' }} />}
+            <span>{editingSolution ? '编辑解决方案' : '新建解决方案'}</span>
+          </Space>
+        }
         open={modalVisible}
         onOk={handleSubmit}
         onCancel={() => {
           setModalVisible(false);
           form.resetFields();
         }}
+        okText="保存"
+        cancelText="取消"
         width={700}
       >
         <Form form={form} layout="vertical" style={{ marginTop: '24px' }}>
-          <Form.Item name="id" label="ID" rules={[{ required: true }]}>
-            <Input placeholder="唯一标识" disabled={!!editingSolution} />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="id" label="解决方案ID" rules={[{ required: true, message: '请输入解决方案ID' }]}>
+                <Input placeholder="例如: ai-training" disabled={!!editingSolution} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="isActive"
+                label="状态"
+                valuePropName="checked"
+                initialValue={true}
+              >
+                <Switch checkedChildren="启用" unCheckedChildren="禁用" />
+              </Form.Item>
+            </Col>
+          </Row>
 
-          <Form.Item name="title" label="标题" rules={[{ required: true }]}>
-            <Input />
+          <Form.Item name="title" label="解决方案标题" rules={[{ required: true, message: '请输入标题' }]}>
+            <Input placeholder="例如: AI训练解决方案" size="large" />
           </Form.Item>
 
           <Form.Item name="subtitle" label="副标题">
-            <Input />
+            <Input placeholder="简短的描述性副标题" size="large" />
           </Form.Item>
 
-          <Form.Item name="description" label="描述">
-            <TextArea rows={3} />
+          <Form.Item name="description" label="详细描述">
+            <TextArea
+              rows={3}
+              placeholder="请输入解决方案的详细描述"
+              maxLength={500}
+              showCount
+            />
           </Form.Item>
 
-          <Form.Item name="highlights" label="亮点（每行一个）">
-            <TextArea rows={4} placeholder="每行输入一个亮点" />
+          <Form.Item name="highlights" label="核心亮点（每行一个）">
+            <TextArea
+              rows={4}
+              placeholder="每行输入一个核心亮点&#10;例如:&#10;高性能计算集群&#10;弹性扩展能力&#10;专业运维支持"
+            />
           </Form.Item>
 
-          <Form.Item name="architecture" label="架构">
-            <TextArea rows={3} />
+          <Form.Item name="architecture" label="架构说明">
+            <TextArea
+              rows={3}
+              placeholder="请输入架构说明"
+              maxLength={500}
+              showCount
+            />
           </Form.Item>
 
-          <Form.Item name="imageUrl" label="图片URL">
-            <Input />
-          </Form.Item>
-
-          <Form.Item name="isActive" label="启用" valuePropName="checked" initialValue={true}>
-            <Switch checkedChildren="是" unCheckedChildren="否" />
+          <Form.Item name="imageUrl" label="封面图片URL">
+            <Input placeholder="https://example.com/image.jpg" />
           </Form.Item>
         </Form>
       </Modal>

@@ -8,21 +8,35 @@ import {
   Switch,
   Space,
   message,
-  Card,
   Tag,
   Popconfirm,
   Image,
   Tabs,
+  Row,
+  Col,
+  Typography,
+  Tooltip,
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  AppstoreOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  TagsOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { productsService, CreateProductRequest, UpdateProductRequest } from '../../services/api/products';
 import { categoriesService, Category } from '../../services/api/categories';
 import { ConfigurableTable } from '../../components/ConfigurableTable';
 import type { ColumnDef } from '../../types/table';
 import ImageUpload from '../../components/ImageUpload';
+import styles from './ProductAdmin.module.css';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { Title, Text } = Typography;
 
 interface Product {
   id: string;
@@ -47,6 +61,34 @@ const ProductAdmin = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form] = Form.useForm();
+
+  // Statistics
+  const stats = {
+    total: products.length,
+    active: products.filter(p => p.isActive).length,
+    inactive: products.filter(p => !p.isActive).length,
+    categories: categories.length,
+  };
+
+  const StatCard = ({ title, value, icon, color, bgColor }: {
+    title: string;
+    value: number;
+    icon: React.ReactNode;
+    color: string;
+    bgColor: string;
+  }) => (
+    <div className={styles.statCard} style={{ background: bgColor, borderColor: color }}>
+      <div className={styles.statIcon} style={{ color, background: bgColor }}>
+        {icon}
+      </div>
+      <div className={styles.statContent}>
+        <Text className={styles.statTitle}>{title}</Text>
+        <Title level={3} className={styles.statValue} style={{ color, margin: 0 }}>
+          {value}
+        </Title>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     fetchProducts();
@@ -140,51 +182,85 @@ const ProductAdmin = () => {
 
   const columnDefinitions: ColumnDef[] = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 200,
-      render: (id: string) => (
-        <span style={{ fontSize: '12px', color: '#666' }}>{id}</span>
-      ),
-    },
-    {
       title: '图片',
       dataIndex: 'imageUrl',
       key: 'imageUrl',
-      width: 80,
-      render: (url: string) => url ? <Image src={url} width={50} height={50} style={{ borderRadius: '4px' }} /> : '-',
+      width: 70,
+      render: (url: string) => url ? (
+        <Image
+          src={url}
+          width={45}
+          height={45}
+          style={{ borderRadius: '8px', objectFit: 'cover' }}
+          fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJF9kT1Iw0AcxV9TpVUqDnYQ6ZChOlkQFXGUKhbBQmkrtOpgcukXNGlIUlwcBdeCgx+LVQcXZ10dXAVB8APEydFJ0UVK/F9SaBHjwXE/3t173L0DhHqZqWbHOKBqlpGMRcVMdlXxQKZ24Pv5NHypXB8kf49VIUqJ7xQkVVUvUqUopVdQpJVWUxUQVTFcqVapXVqpWqqVU9fVa1da1L1Vau1v1UwV6tYvVa/TbHWvW0MzbabLbLac1harWtf2nYbauNbfb3bXat23bft23jM3DbLM3zbTM7TbPd3gX+jIqjexqG1Ma4zgSOJcrxbqcy7KM7sb3bBM7jXOXU3j3O/5jLMd3oXO6e83zvO8jL8fz/P8/Pz//AAbYAXwAqAOoB7gIqAuoCxgLKAu4DCgMuAzoDZgOqA74D6gQGBGQE5AVUBdQGQgbqB1oHlggaCEIIdgh6CRIIugiRCSQJbgnmCgYKJgqGCsoLYgumC9YMIgxKDKIMyg0SDZINqg3qDhIOIg7SD4oQAhCSEJoQqhDaEQ4RmhGSEd4SVhJiEmYSahKOIo4ikSKVIp4ipSKrIrEivSLNIzUjYSNpI3kj3iQhJKEkYSUhLaEu4TzhPeFCIURJSFFIU4hWCFZYV5hZmFq4WvhcWF1IXlhfKF+IYIhhSGSIYphjiGaIZ4hoiGiIaohqiGqIbophiGyIboh0iHeIgIiEiIiIiIiJiIqIioiKiIqIi4iLyIwYjEiMyIzYjOyNBI0kjWSOJI4kjmSOBI5UjmSOxI74kAiRCJIIkgiSCJQIlQiVCJUIlQiVCJYIlYiWCJcImAieCJ8IoAihSKSIpIikSKRIpEikSKSopEikSKRIoEiDyIwEjISMhIyEjQiNCI0IjQiNiI2IjoiPCJBIkMikiSKRIpEikSKSIpIikSKRopEikSKSIpIikSKRIoIiCSCJQIkQikSKSIpIikSKRopIikSKSIpIikSKSIpIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiEiISIhIiH"
+        />
+      ) : (
+        <div
+          style={{
+            width: 45,
+            height: 45,
+            borderRadius: '8px',
+            background: '#f0f0f0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <AppstoreOutlined style={{ fontSize: '20px', color: '#bfbfbf' }} />
+        </div>
+      ),
     },
     {
       title: '产品名称',
       dataIndex: 'name',
       key: 'name',
-      width: 200,
+      width: 180,
+      ellipsis: true,
+      render: (name: string) => (
+        <Space>
+          <AppstoreOutlined style={{ color: '#1890ff' }} />
+          <span style={{ fontWeight: 500 }}>{name}</span>
+        </Space>
+      ),
     },
     {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
-      width: 150,
+      width: 140,
       ellipsis: true,
-      render: (title: string) => title || '-',
+      render: (title: string) => title || <Text type="secondary">-</Text>,
     },
     {
       title: '分类',
       dataIndex: ['category', 'name'],
       key: 'category',
-      width: 120,
+      width: 110,
+      ellipsis: true,
+      render: (name: string) => (
+        <Tag color="cyan" style={{ fontSize: '12px', padding: '3px 10px', borderRadius: '6px' }}>
+          {name}
+        </Tag>
+      ),
     },
     {
       title: '标签',
       dataIndex: 'tags',
       key: 'tags',
-      width: 200,
+      width: 150,
+      ellipsis: true,
       render: (tags: string[]) => (
         <>
-          {tags?.map((tag) => (
-            <Tag key={tag} color="blue">{tag}</Tag>
+          {tags?.slice(0, 2).map((tag) => (
+            <Tag key={tag} color="blue" style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px' }}>
+              {tag}
+            </Tag>
           ))}
+          {tags?.length > 2 && (
+            <Tag color="default" style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '4px' }}>
+              +{tags.length - 2}
+            </Tag>
+          )}
         </>
       ),
     },
@@ -192,27 +268,48 @@ const ProductAdmin = () => {
       title: '价格',
       dataIndex: 'priceDisplay',
       key: 'priceDisplay',
-      width: 120,
-      render: (price: string) => price || '-',
+      width: 100,
+      render: (price: string) => (
+        <Text style={{ fontSize: '13px', color: '#595959' }}>{price || '-'}</Text>
+      ),
     },
     {
       title: '状态',
       key: 'isActive',
-      width: 80,
+      width: 90,
       render: (_: any, record: Product) => (
-        <Switch checked={record.isActive} checkedChildren="上架" unCheckedChildren="下架" disabled />
+        <Tag
+          icon={record.isActive ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
+          color={record.isActive ? 'success' : 'default'}
+          style={{
+            fontSize: '12px',
+            padding: '3px 10px',
+            borderRadius: '12px',
+            fontWeight: 500,
+          }}
+        >
+          {record.isActive ? '已上架' : '已下架'}
+        </Tag>
       ),
     },
     {
       title: '操作',
       key: 'actions',
-      width: 150,
-      fixed: true,
+      width: 130,
+      fixed: 'right',
       render: (_: any, record: Product) => (
         <Space size="small">
-          <Button type="link" size="small" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-            编辑
-          </Button>
+          <Tooltip title="编辑产品">
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
+              className={styles.actionButton}
+            >
+              编辑
+            </Button>
+          </Tooltip>
           <Popconfirm
             title="确认删除"
             description={`确定要删除产品"${record.name}"吗？`}
@@ -220,9 +317,17 @@ const ProductAdmin = () => {
             okText="删除"
             cancelText="取消"
           >
-            <Button type="link" size="small" danger icon={<DeleteOutlined />}>
-              删除
-            </Button>
+            <Tooltip title="删除产品">
+              <Button
+                type="text"
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                className={styles.actionButton}
+              >
+                删除
+              </Button>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -230,15 +335,77 @@ const ProductAdmin = () => {
   ];
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card
-        title="产品管理"
-        extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+    <div className={styles.page}>
+      {/* Page Header */}
+      <div className={styles.pageHeader}>
+        <div className={styles.headerLeft}>
+          <Title level={4} style={{ margin: 0 }}>
+            产品管理
+          </Title>
+          <Text type="secondary">管理所有算力产品和相关信息</Text>
+        </div>
+        <Space>
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={fetchProducts}
+            loading={loading}
+            className={styles.refreshButton}
+          >
+            刷新
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            className={styles.addButton}
+          >
             新建产品
           </Button>
-        }
-      >
+        </Space>
+      </div>
+
+      {/* Statistics Cards */}
+      <Row gutter={[24, 24]} style={{ marginBottom: '32px' }}>
+        <Col xs={24} sm={12} lg={6} xl={6}>
+          <StatCard
+            title="总产品"
+            value={stats.total}
+            icon={<AppstoreOutlined />}
+            color="#1890ff"
+            bgColor="#e6f7ff"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={6} xl={6}>
+          <StatCard
+            title="已上架"
+            value={stats.active}
+            icon={<CheckCircleOutlined />}
+            color="#52c41a"
+            bgColor="#f6ffed"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={6} xl={6}>
+          <StatCard
+            title="已下架"
+            value={stats.inactive}
+            icon={<CloseCircleOutlined />}
+            color="#8c8c8c"
+            bgColor="#f5f5f5"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={6} xl={6}>
+          <StatCard
+            title="分类数"
+            value={stats.categories}
+            icon={<TagsOutlined />}
+            color="#722ed1"
+            bgColor="#f9f0ff"
+          />
+        </Col>
+      </Row>
+
+      {/* Table */}
+      <div className={styles.tableCard}>
         <ConfigurableTable
           tableKey="product-admin"
           columns={columnDefinitions}
@@ -250,19 +417,23 @@ const ProductAdmin = () => {
             showSizeChanger: true,
             showTotal: (total) => `共 ${total} 条`,
           }}
-          scroll={{ x: 1400 }}
         />
-      </Card>
+      </div>
 
       <Modal
-        title={editingProduct ? '编辑产品' : '新建产品'}
+        title={
+          <Space>
+            <AppstoreOutlined style={{ color: '#1890ff' }} />
+            <span>{editingProduct ? '编辑产品' : '新建产品'}</span>
+          </Space>
+        }
         open={modalVisible}
         onOk={handleSubmit}
         onCancel={() => {
           setModalVisible(false);
           form.resetFields();
         }}
-        width={800}
+        width={900}
         okText="确定"
         cancelText="取消"
       >
