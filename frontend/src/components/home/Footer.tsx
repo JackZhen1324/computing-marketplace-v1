@@ -50,10 +50,10 @@ const Footer = () => {
                 <div className={styles.linkGroup}>
                   <Text className={styles.linkGroupTitle}>智算服务</Text>
                   <Space direction="vertical" size={8}>
-                    <a href="/intelligent/gpu-bare-metal">GPU裸金属</a>
-                    <a href="/intelligent/gpu-cloud">GPU云主机</a>
-                    <a href="/intelligent/appliance">智算一体机</a>
-                    <a href="/intelligent/maas">MaaS平台</a>
+                    <a href="/intelligent-computing/gpu-bare-metal">GPU裸金属</a>
+                    <a href="/intelligent-computing/gpu-cloud">GPU云主机</a>
+                    <a href="/intelligent-computing/appliance">智算一体机</a>
+                    <a href="/intelligent-computing/maas">MaaS平台</a>
                   </Space>
                 </div>
               </div>

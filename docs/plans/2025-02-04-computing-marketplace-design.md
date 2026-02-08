@@ -43,10 +43,10 @@ computing-marketplace/
 |-------|------|-------------|
 | `/` | Home | Homepage with hero section and product showcase |
 | `/intelligent` | Intelligent Computing Zone | Overview of intelligent computing products |
-| `/intelligent/gpu-bare-metal` | GPU Bare Metal | Product listing with filters |
-| `/intelligent/gpu-cloud` | GPU Cloud Host | Cloud-based GPU instances |
-| `/intelligent/appliance` | Computing Appliance | Pre-configured hardware solutions |
-| `/intelligent/maas` | MaaS Platform | Model-as-a-Service offerings |
+| `/intelligent-computing/gpu-bare-metal` | GPU Bare Metal | Product listing with filters |
+| `/intelligent-computing/gpu-cloud` | GPU Cloud Host | Cloud-based GPU instances |
+| `/intelligent-computing/appliance` | Computing Appliance | Pre-configured hardware solutions |
+| `/intelligent-computing/maas` | MaaS Platform | Model-as-a-Service offerings |
 | `/general` | General Computing | Standard computing instances |
 | `/solutions` | Solutions Overview | Solutions landing page |
 | `/solutions/platform` | Service Platform | Computing service platform solution |

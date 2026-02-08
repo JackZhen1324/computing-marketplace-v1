@@ -17,5 +17,5 @@ export interface TableConfig {
 export interface ColumnDef extends Omit<ColumnType<any>, 'key'> {
   key: string;           // Required unique identifier
   title: string;         // Column title
-  fixed?: boolean;       // If true, column is always visible (e.g., actions)
+  fixed?: boolean | 'left' | 'right';  // Column fixed position or always-visible flag
 }

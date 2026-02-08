@@ -115,16 +115,6 @@ const CategoryAdmin = () => {
     }
   };
 
-  const handleToggleStatus = async (id: string) => {
-    try {
-      await categoriesService.toggleCategoryStatus(id);
-      message.success('状态更新成功');
-      fetchCategories();
-    } catch (error: any) {
-      message.error('状态更新失败: ' + (error.response?.data?.message || error.message));
-    }
-  };
-
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();

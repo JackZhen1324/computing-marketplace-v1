@@ -104,7 +104,7 @@ const HeroSection = () => {
             </Paragraph>
 
             <Space size="middle" className={styles.heroActions}>
-              <Link to="/intelligent">
+              <Link to="/intelligent-computing">
                 <Button type="primary" size="large" icon={<ArrowRightOutlined />}>
                   探索智算专区
                 </Button>
@@ -137,7 +137,7 @@ const HeroSection = () => {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <Link to={`/intelligent/gpu-bare-metal#${product.id}`}>
+                  <Link to={`/intelligent-computing/gpu-bare-metal#${product.id}`}>
                     <div className={styles.cardHeader}>
                       <Text className={styles.productName}>{product.name}</Text>
                       {product.tags?.includes('热销') && (

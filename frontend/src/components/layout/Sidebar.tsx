@@ -7,7 +7,6 @@ import {
   ReadOutlined,
   AppstoreOutlined,
   BarChartOutlined,
-  SettingOutlined,
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,

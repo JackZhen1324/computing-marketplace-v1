@@ -83,11 +83,6 @@ export const clearAuthTokens = (): void => {
   localStorage.removeItem('refresh_token');
 };
 
-export const clearAuthTokens = (): void => {
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
-};
-
 export const getAccessToken = (): string | null => {
   return localStorage.getItem('access_token');
 };

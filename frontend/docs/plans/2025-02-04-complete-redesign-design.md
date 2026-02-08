@@ -285,7 +285,7 @@ public/
     ├── common/           # Shared images (logo, icons)
     ├── home/             # 首页 specific images
     ├── general-computing/# 通算专区 images
-    ├── intelligent/      # 智算专区 images
+    ├── intelligent-computing/      # 智算专区 images
     │   ├── gpu-bare-metal/
     │   ├── gpu-cloud/
     │   ├── appliance/

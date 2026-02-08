@@ -258,7 +258,7 @@ const HeroSection = () => {
                     transition: { duration: 0.2 },
                   }}
                 >
-                  <Link to={`/intelligent/gpu-bare-metal#${product.id}`}>
+                  <Link to={`/intelligent-computing/gpu-bare-metal#${product.id}`}>
                     <div className={styles.cardHeader}>
                       <Text className={styles.productName}>{product.name}</Text>
                       {product.tags?.includes('热销') && (
@@ -1439,13 +1439,13 @@ const ProductGrid = ({ products, zone }: ProductGridProps) => {
   const getZonePath = (product: any) => {
     switch (product.category) {
       case 'gpu-bare-metal':
-        return '/intelligent/gpu-bare-metal';
+        return '/intelligent-computing/gpu-bare-metal';
       case 'gpu-cloud':
-        return '/intelligent/gpu-cloud';
+        return '/intelligent-computing/gpu-cloud';
       case 'appliance':
-        return '/intelligent/appliance';
+        return '/intelligent-computing/appliance';
       case 'maas':
-        return '/intelligent/maas';
+        return '/intelligent-computing/maas';
       case 'general':
         return '/general';
       default:
@@ -1815,10 +1815,10 @@ const Footer = () => {
                 <div className={styles.linkGroup}>
                   <Text className={styles.linkGroupTitle}>智算服务</Text>
                   <Space direction="vertical" size={8}>
-                    <a href="/intelligent/gpu-bare-metal">GPU裸金属</a>
-                    <a href="/intelligent/gpu-cloud">GPU云主机</a>
-                    <a href="/intelligent/appliance">智算一体机</a>
-                    <a href="/intelligent/maas">MaaS平台</a>
+                    <a href="/intelligent-computing/gpu-bare-metal">GPU裸金属</a>
+                    <a href="/intelligent-computing/gpu-cloud">GPU云主机</a>
+                    <a href="/intelligent-computing/appliance">智算一体机</a>
+                    <a href="/intelligent-computing/maas">MaaS平台</a>
                   </Space>
                 </div>
               </div>

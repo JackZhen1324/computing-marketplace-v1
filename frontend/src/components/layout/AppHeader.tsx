@@ -15,7 +15,7 @@ const AppHeader = () => {
       label: <Link to="/">首页</Link>,
     },
     {
-      key: 'intelligent',
+      key: '/intelligent-computing',
       icon: <CloudServerOutlined />,
       label: (
         <span>
@@ -24,16 +24,16 @@ const AppHeader = () => {
         </span>
       ),
       children: [
-        { key: '/intelligent/gpu-bare-metal', label: <Link to="/intelligent/gpu-bare-metal">GPU裸金属</Link> },
-        { key: '/intelligent/gpu-cloud', label: <Link to="/intelligent/gpu-cloud">GPU云主机</Link> },
-        { key: '/intelligent/appliance', label: <Link to="/intelligent/appliance">智算一体机</Link> },
-        { key: '/intelligent/maas', label: <Link to="/intelligent/maas">MaaS平台</Link> },
+        { key: '/intelligent-computing/gpu-bare-metal', label: <Link to="/intelligent-computing/gpu-bare-metal">GPU裸金属</Link> },
+        { key: '/intelligent-computing/gpu-cloud', label: <Link to="/intelligent-computing/gpu-cloud">GPU云主机</Link> },
+        { key: '/intelligent-computing/appliance', label: <Link to="/intelligent-computing/appliance">智算一体机</Link> },
+        { key: '/intelligent-computing/maas', label: <Link to="/intelligent-computing/maas">MaaS平台</Link> },
       ],
     },
     {
-      key: '/general',
+      key: '/general-computing',
       icon: <ExperimentOutlined />,
-      label: <Link to="/general">通算专区</Link>,
+      label: <Link to="/general-computing">通算专区</Link>,
     },
     {
       key: '/solutions',
@@ -55,8 +55,8 @@ const AppHeader = () => {
   // 获取当前选中的菜单项
   const getSelectedKeys = () => {
     const path = location.pathname
-    if (path.startsWith('/intelligent/')) {
-      return ['intelligent']
+    if (path.startsWith('/intelligent-computing/')) {
+      return ['intelligent-computing']
     }
     return [path]
   }

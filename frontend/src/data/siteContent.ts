@@ -65,7 +65,7 @@ export const intelligentContent: PageContent = {
     backgroundImage: '/images/common/首页/intelligent-hero-bg.png',
     cta: {
       text: '查看产品',
-      link: '/intelligent/gpu-bare-metal',
+      link: '/intelligent-computing/gpu-bare-metal',
     },
   },
   features: [

@@ -13,10 +13,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const handleClick = () => {
     // Navigate based on category
     const pathMap: Record<Product['category'], string> = {
-      'gpu-bare-metal': '/intelligent/gpu-bare-metal',
-      'gpu-cloud': '/intelligent/gpu-cloud',
-      'appliance': '/intelligent/appliance',
-      'maas': '/intelligent/maas',
+      'gpu-bare-metal': '/intelligent-computing/gpu-bare-metal',
+      'gpu-cloud': '/intelligent-computing/gpu-cloud',
+      'appliance': '/intelligent-computing/appliance',
+      'maas': '/intelligent-computing/maas',
       'general': '/general',
     };
 

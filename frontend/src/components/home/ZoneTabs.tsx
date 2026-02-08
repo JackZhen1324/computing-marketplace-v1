@@ -203,7 +203,7 @@ const ZoneTabs = () => {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5 }}
         >
-          <Link to={`/${activeTab}`}>
+          <Link to={`/${activeTab === 'intelligent' ? 'intelligent-computing' : activeTab === 'general' ? 'general-computing' : 'solutions'}`}>
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

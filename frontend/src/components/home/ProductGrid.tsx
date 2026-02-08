@@ -87,13 +87,13 @@ const ProductGrid = ({ products, zone }: ProductGridProps) => {
   const getZonePath = (product: any) => {
     switch (product.category) {
       case 'gpu-bare-metal':
-        return '/intelligent/gpu-bare-metal';
+        return '/intelligent-computing/gpu-bare-metal';
       case 'gpu-cloud':
-        return '/intelligent/gpu-cloud';
+        return '/intelligent-computing/gpu-cloud';
       case 'appliance':
-        return '/intelligent/appliance';
+        return '/intelligent-computing/appliance';
       case 'maas':
-        return '/intelligent/maas';
+        return '/intelligent-computing/maas';
       case 'general':
         return '/general';
       default:

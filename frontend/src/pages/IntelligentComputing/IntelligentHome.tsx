@@ -22,7 +22,7 @@ const IntelligentHome = () => {
       icon: <ThunderboltOutlined />,
       color: 'linear-gradient(135deg, #5B67E5 0%, #4C51BF 100%)',
       features: ['资源独享', '极致性能', '稳定可靠'],
-      link: '/intelligent/gpu-bare-metal',
+      link: '/intelligent-computing/gpu-bare-metal',
     },
     {
       id: 'gpu-cloud',
@@ -32,7 +32,7 @@ const IntelligentHome = () => {
       icon: <CloudOutlined />,
       color: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
       features: ['弹性伸缩', '按需计费', '快速部署'],
-      link: '/intelligent/gpu-cloud',
+      link: '/intelligent-computing/gpu-cloud',
     },
     {
       id: 'appliance',
@@ -42,7 +42,7 @@ const IntelligentHome = () => {
       icon: <RocketOutlined />,
       color: 'linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%)',
       features: ['开箱即用', '软硬一体', '快速上线'],
-      link: '/intelligent/appliance',
+      link: '/intelligent-computing/appliance',
     },
     {
       id: 'maas',
@@ -52,7 +52,7 @@ const IntelligentHome = () => {
       icon: <CodeOutlined />,
       color: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
       features: ['标准API', '即取即用', '持续优化'],
-      link: '/intelligent/maas',
+      link: '/intelligent-computing/maas',
     },
   ];
 
@@ -169,12 +169,12 @@ const IntelligentHome = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
           >
-            <Link to="/intelligent/gpu-bare-metal" className={styles.primaryButton}>
+            <Link to="/intelligent-computing/gpu-bare-metal" className={styles.primaryButton}>
               <ThunderboltOutlined style={{ marginRight: '8px' }} />
               探索GPU裸金属
               <ArrowRightOutlined style={{ marginLeft: '8px' }} />
             </Link>
-            <Link to="/intelligent/gpu-cloud" className={styles.secondaryButton}>
+            <Link to="/intelligent-computing/gpu-cloud" className={styles.secondaryButton}>
               <CloudOutlined style={{ marginRight: '8px' }} />
               GPU云主机
             </Link>
