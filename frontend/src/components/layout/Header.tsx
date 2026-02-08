@@ -200,8 +200,16 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <Link to="/" className={styles.logo}>
+        <Link to="/" className={styles.logo} style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <img src="/images/首页/u3.png" alt="Logo" className={styles.logoImage} />
+          <span style={{
+            fontSize: '20px',
+            fontWeight: 700,
+            color: '#1a1a1a',
+            letterSpacing: '0.5px'
+          }}>
+            云聚通智
+          </span>
         </Link>
 
         {!isMobile ? renderDesktopNav() : renderMobileNav()}
