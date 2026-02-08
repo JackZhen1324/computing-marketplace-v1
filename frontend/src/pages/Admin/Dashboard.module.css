@@ -8,6 +8,18 @@
   margin-bottom: 24px;
 }
 
+/* Statistics Cards */
+.statCard {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.statCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
 /* Quick Links */
 .quickLink {
   display: inline-flex;

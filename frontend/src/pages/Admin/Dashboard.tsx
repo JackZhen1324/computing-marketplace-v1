@@ -2,9 +2,9 @@ import { Card, Row, Col, Statistic, Typography, Space } from 'antd';
 import {
   MessageOutlined,
   ShoppingCartOutlined,
-  UserOutlined,
+  FileTextOutlined,
+  CheckCircleOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined,
 } from '@ant-design/icons';
 import { useInquiries } from '../../services/hooks/useInquiries';
 import { useProducts } from '../../services/hooks/useProducts';
@@ -35,52 +35,55 @@ const Dashboard = () => {
       {/* Statistics Cards */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className={styles.statCard}>
             <Statistic
               title="总询价数"
               value={totalInquiries}
-              prefix={<MessageOutlined />}
+              prefix={<MessageOutlined style={{ color: '#1890ff' }} />}
               suffix={
                 <span style={{ fontSize: 14, color: '#3f8600' }}>
                   <ArrowUpOutlined /> {inquiryTrend}%
                 </span>
               }
+              valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className={styles.statCard}>
             <Statistic
               title="待处理询价"
               value={pendingInquiries}
-              prefix={<MessageOutlined />}
-              valueStyle={{ color: pendingInquiries > 0 ? '#cf1322' : undefined }}
+              prefix={<FileTextOutlined style={{ color: '#ff4d4f' }} />}
+              valueStyle={{ color: pendingInquiries > 0 ? '#ff4d4f' : '#999' }}
             />
           </Card>
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className={styles.statCard}>
             <Statistic
               title="产品总数"
               value={totalProducts}
-              prefix={<ShoppingCartOutlined />}
+              prefix={<ShoppingCartOutlined style={{ color: '#52c41a' }} />}
               suffix={
                 <span style={{ fontSize: 14, color: '#3f8600' }}>
                   <ArrowUpOutlined /> {productTrend}%
                 </span>
               }
+              valueStyle={{ color: '#52c41a' }}
             />
           </Card>
         </Col>
 
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className={styles.statCard}>
             <Statistic
               title="在线产品"
               value={activeProducts}
-              prefix={<ShoppingCartOutlined />}
+              prefix={<CheckCircleOutlined style={{ color: '#faad14' }} />}
+              valueStyle={{ color: '#faad14' }}
             />
           </Card>
         </Col>
