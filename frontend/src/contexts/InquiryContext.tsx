@@ -21,7 +21,12 @@ export const InquiryProvider = ({ children }: { children: ReactNode }) => {
         productId,
         productName,
         productCategory,
-        ...data,
+        customerName: data.customerName,
+        contactPhone: data.contactPhone,
+        email: data.email,
+        companyName: data.companyName,
+        interestedProducts: data.interestedProducts,
+        specification: data.specification,
       });
       message.success('询价提交成功！我们会尽快联系您');
     } catch (error) {

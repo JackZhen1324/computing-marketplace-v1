@@ -1,0 +1,41 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-height);
+  padding: 0 var(--spacing-xl);
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex: 1;
+}
+
+.breadcrumb {
+  font-size: 14px;
+}
+
+.breadcrumb :global(.ant-breadcrumb-link) {
+  color: var(--color-text-secondary);
+}
+
+.breadcrumb :global(.ant-breadcrumb-separator) {
+  color: var(--color-text-tertiary);
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}

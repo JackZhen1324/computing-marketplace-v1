@@ -1,0 +1,225 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
+  transition: width var(--transition-slow);
+  z-index: var(--z-fixed);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Logo Area */
+.logo {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-lg);
+  height: var(--header-height);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.logoText {
+  margin-left: var(--spacing-md);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-sidebar-text);
+  white-space: nowrap;
+}
+
+/* Toggle Button */
+.toggleBtn {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-sidebar-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.toggleBtn:hover {
+  background-color: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text);
+}
+
+.collapsed .toggleBtn {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Navigation */
+.navigation {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-md) 0;
+}
+
+.navigation::-webkit-scrollbar {
+  width: 4px;
+}
+
+.navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navigation::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: 4px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  color: var(--color-sidebar-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+}
+
+.menuItem:hover {
+  background-color: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text);
+}
+
+.menuItem.active {
+  background-color: var(--color-sidebar-hover);
+  border-left-color: var(--color-sidebar-active);
+  color: var(--color-sidebar-active);
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.menuLabel {
+  margin-left: var(--spacing-md);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* User Section */
+.userSection {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: var(--spacing-sm);
+}
+
+.userButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--color-sidebar-text);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  transition: background-color var(--transition-fast);
+}
+
+.userButton:hover {
+  background-color: var(--color-sidebar-hover);
+}
+
+.userAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.userName {
+  margin-left: var(--spacing-md);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.settingsBtn {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-sidebar-text-muted);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.settingsBtn:hover {
+  background-color: var(--color-sidebar-hover);
+  color: var(--color-sidebar-text);
+}
+
+/* Collapsed State */
+.collapsed .logoText,
+.collapsed .menuLabel,
+.collapsed .userName {
+  display: none;
+}
+
+.collapsed .userButton {
+  justify-content: center;
+  padding: var(--spacing-sm);
+}
+
+.collapsed .logo {
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.collapsed .logo .logoIcon {
+  margin: 0;
+}
+
+.collapsed .menuItem {
+  justify-content: center;
+  padding: var(--spacing-md);
+}

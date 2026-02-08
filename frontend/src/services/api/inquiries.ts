@@ -2,7 +2,7 @@ import apiClient from './client';
 import { ApiResponse, Inquiry, InquiryFormData } from '../types/api';
 
 export const inquiriesService = {
-  async submitInquiry(data: InquiryFormData & { productId?: string }): Promise<Inquiry> {
+  async submitInquiry(data: InquiryFormData & { productId?: string; productName?: string; productCategory?: string }): Promise<Inquiry> {
     const response = await apiClient.post<ApiResponse<Inquiry>>('/inquiries', data);
 
     return response.data.data;
