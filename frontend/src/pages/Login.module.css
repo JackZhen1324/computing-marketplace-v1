@@ -1,0 +1,404 @@
+/* Container */
+.container {
+  min-height: 100vh;
+  display: flex;
+  background: #f5f7fa;
+}
+
+/* Left Panel - Brand Section */
+.leftPanel {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-width: 450px;
+}
+
+.brandContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: white;
+  padding: 60px 40px;
+  max-width: 500px;
+}
+
+.brandIcon {
+  font-size: 80px;
+  margin-bottom: 24px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.brandTitle {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  letter-spacing: 1px;
+}
+
+.brandSubtitle {
+  font-size: 18px;
+  opacity: 0.95;
+  margin: 0 0 48px 0;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+/* Features */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: left;
+  margin-top: 48px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(8px);
+}
+
+.featureIcon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.featureText {
+  flex: 1;
+}
+
+.featureTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.featureDesc {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Decorative Circles */
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.circle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Right Panel - Form Section */
+.rightPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #ffffff;
+  min-width: 500px;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 480px;
+}
+
+.mobileLogo {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.logoIcon {
+  font-size: 36px;
+}
+
+.logoText {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 0.5px;
+}
+
+/* Form */
+.formWrapper {
+  width: 100%;
+}
+
+.formHeader {
+  margin-bottom: 32px;
+}
+
+.formTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.formSubtitle {
+  font-size: 15px;
+  color: #666;
+  margin: 0;
+}
+
+.form {
+  margin-top: 24px;
+}
+
+.formLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.input {
+  border-radius: 8px;
+  border: 1.5px solid #e0e0e0;
+  transition: all 0.3s ease;
+}
+
+.input:hover,
+.input:focus,
+.input-focused {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.inputIcon {
+  color: #999;
+  font-size: 16px;
+}
+
+/* Form Actions */
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.checkbox {
+  color: #666;
+}
+
+.checkbox:hover {
+  color: #667eea;
+}
+
+.forgotLink {
+  color: #667eea;
+  font-size: 14px;
+  transition: opacity 0.3s ease;
+}
+
+.forgotLink:hover {
+  opacity: 0.8;
+  color: #667eea;
+}
+
+/* Submit Button */
+.submitButton {
+  height: 48px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+/* Switch Form */
+.switchForm {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.switchText {
+  color: #666;
+  font-size: 14px;
+}
+
+.switchButton {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  transition: all 0.3s ease;
+}
+
+.switchButton:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Demo Accounts */
+.demoAccounts {
+  margin-top: 32px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.demoTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.demoAccount {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #666;
+  padding: 6px 0;
+  flex-wrap: wrap;
+}
+
+.demoLabel {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 50px;
+}
+
+.demoEmail {
+  font-family: 'Courier New', monospace;
+  color: #333;
+}
+
+.demoDivider {
+  color: #999;
+  margin: 0 4px;
+}
+
+.demoPassword {
+  font-family: 'Courier New', monospace;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .leftPanel {
+    min-width: 350px;
+  }
+
+  .rightPanel {
+    min-width: 400px;
+  }
+
+  .brandTitle {
+    font-size: 36px;
+  }
+
+  .brandSubtitle {
+    font-size: 16px;
+  }
+
+  .features {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftPanel {
+    display: none;
+  }
+
+  .rightPanel {
+    padding: 24px;
+    min-width: auto;
+  }
+
+  .mobileLogo {
+    display: flex;
+  }
+
+  .formTitle {
+    font-size: 24px;
+  }
+
+  .formSubtitle {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rightPanel {
+    padding: 16px;
+  }
+
+  .formHeader {
+    margin-bottom: 24px;
+  }
+
+  .demoAccounts {
+    padding: 16px;
+  }
+
+  .demoAccount {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
