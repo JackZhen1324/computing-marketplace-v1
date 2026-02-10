@@ -197,7 +197,7 @@ const Solutions = () => {
             viewport={{ once: true, margin: "-100px" }}
           >
             <Row gutter={[32, 32]}>
-              {solutionsList.map((solution, index) => (
+              {solutionsList.map((solution) => (
                 <Col xs={24} md={8} key={solution.id}>
                   <motion.div
                     variants={itemVariants}

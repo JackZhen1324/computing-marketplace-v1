@@ -5,7 +5,6 @@ import {
   ClockCircleOutlined,
   FileTextOutlined,
   RocketOutlined,
-  AlertOutlined,
   BookOutlined,
   NotificationOutlined,
 } from '@ant-design/icons';
@@ -198,7 +197,7 @@ const News = () => {
             initial="hidden"
             animate="visible"
           >
-            {filteredItems.map((item, index) => (
+            {filteredItems.map((item) => (
               <motion.div
                 key={item.id}
                 className={styles.newsCard}
