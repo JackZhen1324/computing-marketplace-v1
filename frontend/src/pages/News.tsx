@@ -6,6 +6,8 @@ import {
   FileTextOutlined,
   RocketOutlined,
   AlertOutlined,
+  BookOutlined,
+  NotificationOutlined,
 } from '@ant-design/icons';
 import { newsService, NewsArticle } from '../services/api/news';
 import styles from './News.module.css';
@@ -68,18 +70,18 @@ const News = () => {
   }
 
   const getIconForTag = (tag: string | null) => {
-    if (!tag) return <FileTextOutlined />;
+    if (!tag) return <BookOutlined />;
     switch (tag) {
       case '政策文件':
       case '产业政策':
       case '国家规划':
-        return <FileTextOutlined />;
+        return <BookOutlined />;
       case '产品动态':
         return <RocketOutlined />;
       case '技术前沿':
-        return <ClockCircleOutlined />;
+        return <NotificationOutlined />;
       default:
-        return <AlertOutlined />;
+        return <FileTextOutlined />;
     }
   };
 
@@ -110,63 +112,80 @@ const News = () => {
   return (
     <div className={styles.page}>
       {/* Hero Section */}
-      <section className={styles.hero}>
+      <motion.section
+        className={styles.hero}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles.heroBackground}>
           <div className={styles.gridOverlay}></div>
           <div className={styles.gradientOrb}></div>
+          <div className={styles.gradientOrb2}></div>
         </div>
 
-        <div className={styles.heroContent}>
+        <motion.div
+          className={styles.heroContent}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           <motion.div
-            className={styles.heroIcon}
+            className={styles.heroBadge}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            style={{ fontSize: '80px', marginBottom: '24px' }}
+            transition={{ duration: 0.5, delay: 0.3 }}
           >
-            📰
+            <NotificationOutlined />
+            行业资讯
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Title level={1} className={styles.heroTitle}>
-              政策&新闻
-            </Title>
-            <Paragraph className={styles.heroSubtitle}>
-              了解最新的算力产业政策和平台动态，把握行业发展脉搏
-            </Paragraph>
-          </motion.div>
-        </div>
-      </section>
+          <Title level={1} className={styles.heroTitle}>
+            政策&新闻
+          </Title>
+          <Paragraph className={styles.heroSubtitle}>
+            了解最新的算力产业政策和平台动态，把握行业发展脉搏
+          </Paragraph>
+        </motion.div>
+      </motion.section>
 
       {/* Filter Tabs */}
       <section className={styles.filterSection}>
         <div className={styles.container}>
-          <div className={styles.tabs}>
-            <button
-              className={`${styles.tab} ${activeTab === 'all' ? styles.active : ''}`}
+          <motion.div
+            className={styles.tabs}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <motion.button
+              className={`${styles.pillTab} ${activeTab === 'all' ? styles.active : ''}`}
               onClick={() => setActiveTab('all')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
+              <FileTextOutlined />
               全部
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'POLICY' ? styles.active : ''}`}
+            </motion.button>
+            <motion.button
+              className={`${styles.pillTab} ${activeTab === 'POLICY' ? styles.activePolicy : ''}`}
               onClick={() => setActiveTab('POLICY')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <FileTextOutlined style={{ marginRight: '6px' }} />
+              <BookOutlined />
               政策文件
-            </button>
-            <button
-              className={`${styles.tab} ${activeTab === 'NEWS' ? styles.active : ''}`}
+            </motion.button>
+            <motion.button
+              className={`${styles.pillTab} ${activeTab === 'NEWS' ? styles.activeNews : ''}`}
               onClick={() => setActiveTab('NEWS')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <RocketOutlined style={{ marginRight: '6px' }} />
+              <RocketOutlined />
               新闻动态
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -179,40 +198,58 @@ const News = () => {
             initial="hidden"
             animate="visible"
           >
-            {filteredItems.map((item) => (
+            {filteredItems.map((item, index) => (
               <motion.div
                 key={item.id}
                 className={styles.newsCard}
                 variants={itemVariants}
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
+                whileHover={{ y: -12, scale: 1.02 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
               >
                 <Card
                   bordered={false}
                   className={styles.card}
                   style={{
                     background: item.type === 'POLICY'
-                      ? 'linear-gradient(135deg, #fff5f5 0%, #ffffff 100%)'
-                      : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
+                      ? 'linear-gradient(135deg, #fff5f5 0%, #ffffff 50%, #fff0f0 100%)'
+                      : 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f7ff 100%)',
                   }}
                 >
+                  {/* Decorative Top Border */}
+                  <div
+                    className={styles.topBorder}
+                    style={{
+                      background: item.type === 'POLICY'
+                        ? 'linear-gradient(90deg, #f56565 0%, #ed8936 100%)'
+                        : 'linear-gradient(90deg, #4299e1 0%, #667eea 100%)',
+                    }}
+                  ></div>
+
                   {/* Header */}
                   <div className={styles.cardHeader}>
-                    <div
+                    <motion.div
                       className={styles.typeIcon}
                       style={{
                         background: item.type === 'POLICY'
                           ? 'linear-gradient(135deg, #f56565 0%, #ed8936 100%)'
                           : 'linear-gradient(135deg, #4299e1 0%, #667eea 100%)',
                       }}
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
                     >
                       {getIconForTag(item.tag)}
-                    </div>
+                    </motion.div>
                     <Tag
-                      color={item.type === 'POLICY' ? 'red' : 'blue'}
                       className={styles.typeTag}
+                      style={{
+                        background: item.type === 'POLICY'
+                          ? 'linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(237, 137, 54, 0.1) 100%)'
+                          : 'linear-gradient(135deg, rgba(66, 153, 225, 0.1) 0%, rgba(102, 126, 234, 0.1) 100%)',
+                        color: item.type === 'POLICY' ? '#f56565' : '#4299e1',
+                        border: `1px solid ${item.type === 'POLICY' ? 'rgba(245, 101, 101, 0.2)' : 'rgba(66, 153, 225, 0.2)'}`,
+                      }}
                     >
-                      {item.type === 'POLICY' ? '政策' : '新闻'}
+                      {item.type === 'POLICY' ? '政策文件' : '新闻动态'}
                     </Tag>
                   </div>
 
@@ -227,19 +264,32 @@ const News = () => {
 
                   {/* Footer */}
                   <div className={styles.cardFooter}>
-                    <Space size="large">
+                    <Space size="large" className={styles.footerLeft}>
                       <Text className={styles.footerInfo}>
-                        <ClockCircleOutlined style={{ marginRight: '4px' }} />
+                        <ClockCircleOutlined className={styles.footerIcon} />
                         {item.publishDate}
                       </Text>
                       <Text className={styles.footerInfo}>
-                        <FileTextOutlined style={{ marginRight: '4px' }} />
+                        <FileTextOutlined className={styles.footerIcon} />
                         {item.source}
                       </Text>
                     </Space>
-                    <Tag color={item.type === 'POLICY' ? 'orange' : 'cyan'}>
-                      {item.tag}
-                    </Tag>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Tag
+                        className={styles.categoryTag}
+                        style={{
+                          background: item.type === 'POLICY'
+                            ? 'linear-gradient(135deg, rgba(237, 137, 54, 0.15) 0%, rgba(245, 101, 101, 0.15) 100%)'
+                            : 'linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(66, 153, 225, 0.15) 100%)',
+                          color: item.type === 'POLICY' ? '#ed8936' : '#22d3ee',
+                        }}
+                      >
+                        {item.tag}
+                      </Tag>
+                    </motion.div>
                   </div>
                 </Card>
               </motion.div>
