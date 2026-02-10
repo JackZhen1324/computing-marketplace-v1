@@ -1,11 +1,19 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Row, Col, Card, Typography, Button, Pagination, Spin, Alert } from 'antd';
+import { Row, Col, Card, Typography, Button, Pagination, Spin, Alert, Tag } from 'antd';
+import {
+  CloudServerOutlined,
+  CheckCircleOutlined,
+  ThunderboltOutlined,
+  SafetyOutlined,
+  DollarOutlined,
+  ClockCircleOutlined,
+} from '@ant-design/icons';
 import { useProducts } from '../../services/hooks/useProducts';
 import InquiryDialog from '../../components/common/InquiryDialog';
 import styles from './GeneralComputing.module.css';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 const GeneralComputing = () => {
   const { products, loading, error } = useProducts({ category: 'general' });
@@ -21,12 +29,12 @@ const GeneralComputing = () => {
 
   // Categories from design
   const categories = [
-    { key: 'all', label: '全部' },
-    { key: 'domestic', label: '国产CPU型' },
-    { key: 'general', label: '通用应用型' },
-    { key: 'enhanced', label: '通用计算增强型' },
-    { key: 'memory', label: '内存计算型' },
-    { key: 'storage', label: '存储型' },
+    { key: 'all', label: '全部', icon: <CloudServerOutlined /> },
+    { key: 'domestic', label: '国产CPU型', icon: <ThunderboltOutlined /> },
+    { key: 'general', label: '通用应用型', icon: <CloudServerOutlined /> },
+    { key: 'enhanced', label: '通用计算增强型', icon: <SafetyOutlined /> },
+    { key: 'memory', label: '内存计算型', icon: <DollarOutlined /> },
+    { key: 'storage', label: '存储型', icon: <ClockCircleOutlined /> },
   ];
 
   // Filter products by category
@@ -103,29 +111,50 @@ const GeneralComputing = () => {
 
         <div className={styles.heroContent}>
           <motion.div
-            className={styles.heroIcon}
+            className={styles.heroBadge}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            style={{ fontSize: '80px', marginBottom: '24px' }}
           >
-            💻
+            <CloudServerOutlined style={{ fontSize: '20px', marginRight: '8px' }} />
+            企业级云计算服务
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
             <Title level={1} className={styles.heroTitle}>
               通用计算云主机
             </Title>
-            <Text className={styles.heroSubtitle}>
+            <Paragraph className={styles.heroSubtitle}>
               提供安全稳定、可随时自助获取、弹性伸缩的计算服务
-            </Text>
-            <Text className={styles.heroHighlight}>
-              数百种实例规格，灵活计费，极简运维，极大降低企业成本
-            </Text>
+            </Paragraph>
+          </motion.div>
+
+          <motion.div
+            className={styles.features}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <div className={styles.featureItem}>
+              <CheckCircleOutlined className={styles.featureIcon} />
+              <span>弹性伸缩</span>
+            </div>
+            <div className={styles.featureItem}>
+              <CheckCircleOutlined className={styles.featureIcon} />
+              <span>安全可靠</span>
+            </div>
+            <div className={styles.featureItem}>
+              <CheckCircleOutlined className={styles.featureIcon} />
+              <span>极速部署</span>
+            </div>
+            <div className={styles.featureItem}>
+              <CheckCircleOutlined className={styles.featureIcon} />
+              <span>灵活计费</span>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -133,9 +162,14 @@ const GeneralComputing = () => {
       {/* Category Tags - Matching Design */}
       <section className={styles.categoriesSection}>
         <div className={styles.container}>
-          <div className={styles.categoryTabs}>
-            {categories.map((category) => (
-              <div
+          <motion.div
+            className={styles.categoryTabs}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {categories.map((category, index) => (
+              <motion.button
                 key={category.key}
                 className={`${styles.categoryTab} ${
                   activeCategory === category.key ? styles.active : ''
@@ -144,78 +178,111 @@ const GeneralComputing = () => {
                   setActiveCategory(category.key);
                   setCurrentPage(1);
                 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
+                {category.icon}
                 {category.label}
-              </div>
+              </motion.button>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Products Grid - Matching Design 3x2 Layout */}
       <section className={styles.productsSection}>
         <div className={styles.container}>
-          <Row gutter={[24, 24]}>
-            {paginatedProducts.map((product) => (
-              <Col xs={24} sm={12} lg={8} key={product.id}>
-                <Card
-                  hoverable
-                  className={`${styles.productCard} fade-in-up`}
-                  cover={
-                    <div className={styles.cardCover}>
-                      {product.tags && product.tags.includes('热销') && (
-                        <div className={`${styles.cardTag} ${styles.tagHot}`}>热销</div>
-                      )}
-                      {product.tags && product.tags.includes('上新') && (
-                        <div className={`${styles.cardTag} ${styles.tagNew}`}>上新</div>
-                      )}
-                      {product.tags && product.tags.includes('推荐') && (
-                        <div className={`${styles.cardTag} ${styles.tagRecommend}`}>推荐</div>
-                      )}
-                    </div>
-                  }
-                >
-                  <Title level={4} className={styles.productName}>
-                    {product.name}
-                  </Title>
-
-                  <div className={styles.productPricing}>
-                    <Text className={styles.priceLabel}>包周期</Text>
-                    <Text className={styles.price}>
-                      {product.priceDisplay}
-                    </Text>
-                  </div>
-
-                  <Text className={styles.productDescription}>
-                    {product.description}
-                  </Text>
-
-                  <div className={styles.productSpecs}>
-                    <div className={styles.specRow}>
-                      <Text className={styles.specLabel}>CPU内存比</Text>
-                      <Text className={styles.specValue}>{product.cpuMemoryRatio}</Text>
-                    </div>
-                    <div className={styles.specRow}>
-                      <Text className={styles.specLabel}>vCPU数量范围</Text>
-                      <Text className={styles.specValue}>{product.vcpuRange}</Text>
-                    </div>
-                    <div className={styles.specRow}>
-                      <Text className={styles.specLabel}>基频/睿频</Text>
-                      <Text className={styles.specValue}>{product.baseFreq}</Text>
-                    </div>
-                  </div>
-
-                  <Button
-                    type="primary"
-                    className={styles.ctaButton}
-                    onClick={() => handleInquiryClick(product)}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <Row gutter={[24, 24]}>
+              {paginatedProducts.map((product, index) => (
+                <Col xs={24} sm={12} lg={8} key={product.id}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    whileHover={{ y: -8 }}
                   >
-                    立即咨询
-                  </Button>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+                    <Card
+                      hoverable
+                      className={styles.productCard}
+                      style={{
+                        background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                      }}
+                    >
+                      {/* Animated Top Border */}
+                      <div className={styles.cardTopBorder}></div>
+
+                      {/* Tags */}
+                      <div className={styles.cardTags}>
+                        {product.tags && product.tags.includes('热销') && (
+                          <Tag className={styles.cardTagHot} color="red">热销</Tag>
+                        )}
+                        {product.tags && product.tags.includes('上新') && (
+                          <Tag className={styles.cardTagNew} color="green">上新</Tag>
+                        )}
+                        {product.tags && product.tags.includes('推荐') && (
+                          <Tag className={styles.cardTagRecommend} color="blue">推荐</Tag>
+                        )}
+                      </div>
+
+                      <Title level={4} className={styles.productName}>
+                        {product.name}
+                      </Title>
+
+                      <div className={styles.productPricing}>
+                        <Text className={styles.priceLabel}>包周期</Text>
+                        <Text className={styles.price}>
+                          {product.priceDisplay}
+                        </Text>
+                      </div>
+
+                      <Paragraph className={styles.productDescription}>
+                        {product.description}
+                      </Paragraph>
+
+                      <div className={styles.productSpecs}>
+                        <div className={styles.specRow}>
+                          <Text className={styles.specLabel}>CPU内存比</Text>
+                          <Text className={styles.specValue}>{product.cpuMemoryRatio}</Text>
+                        </div>
+                        <div className={styles.specRow}>
+                          <Text className={styles.specLabel}>vCPU数量范围</Text>
+                          <Text className={styles.specValue}>{product.vcpuRange}</Text>
+                        </div>
+                        <div className={styles.specRow}>
+                          <Text className={styles.specLabel}>基频/睿频</Text>
+                          <Text className={styles.specValue}>{product.baseFreq}</Text>
+                        </div>
+                      </div>
+
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Button
+                          type="primary"
+                          className={styles.ctaButton}
+                          onClick={() => handleInquiryClick(product)}
+                          block
+                        >
+                          立即咨询
+                        </Button>
+                      </motion.div>
+                    </Card>
+                  </motion.div>
+                </Col>
+              ))}
+            </Row>
+          </motion.div>
 
           {/* Pagination - Matching Design */}
           <div className={styles.paginationWrapper}>
@@ -235,18 +302,34 @@ const GeneralComputing = () => {
         </div>
       </section>
 
-      {/* Contact Section - Matching Design */}
+      {/* Contact Section - Enhanced Design */}
       <section className={styles.contactSection}>
         <div className={styles.container}>
-          <div className={styles.contactInfo}>
-            <Title level={3} className={styles.contactTitle}>联系我们：</Title>
-            <Text className={styles.contactText}>
-              中电信数智科技有限公司
-            </Text>
-            <Text className={styles.contactText}>
-              地 址：北京市西城区展览路街道京鼎大厦2
-            </Text>
-          </div>
+          <motion.div
+            className={styles.contactCard}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className={styles.contactIcon}>
+              <CloudServerOutlined />
+            </div>
+            <Title level={2} className={styles.contactTitle}>需要帮助？</Title>
+            <Paragraph className={styles.contactDesc}>
+              我们的专业团队随时为您提供咨询服务，帮您找到最适合的通用计算解决方案
+            </Paragraph>
+            <div className={styles.contactInfo}>
+              <div className={styles.contactItem}>
+                <Text className={styles.contactLabel}>公司</Text>
+                <Text className={styles.contactValue}>中电信数智科技有限公司</Text>
+              </div>
+              <div className={styles.contactItem}>
+                <Text className={styles.contactLabel}>地址</Text>
+                <Text className={styles.contactValue}>北京市西城区展览路街道京鼎大厦</Text>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
