@@ -189,12 +189,21 @@
 }
 
 .mobileNavLabel {
+  display: block;
   padding: 14px 20px;
   color: #4a5568;
   font-size: 15px;
   font-weight: 600;
   background: rgba(0, 0, 0, 0.03);
   border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.mobileNavLabel:hover {
+  background: rgba(63, 88, 250, 0.08);
+  color: var(--color-primary);
+  transform: translateX(4px);
 }
 
 .mobileNavLabel.active {

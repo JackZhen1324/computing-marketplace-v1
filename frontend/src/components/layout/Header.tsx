@@ -147,9 +147,13 @@ const Header = () => {
             if (item.children) {
               return (
                 <div key={item.path} className={styles.mobileNavItem}>
-                  <div className={`${styles.mobileNavLabel} ${isActive ? styles.active : ''}`}>
+                  <Link
+                    to={item.path!}
+                    className={`${styles.mobileNavLabel} ${isActive ? styles.active : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
                     {item.label}
-                  </div>
+                  </Link>
                   <div className={styles.mobileSubMenu}>
                     {item.children.filter((child: NavItem) => child.path).map((child: NavItem) => (
                       <Link
